@@ -1,13 +1,14 @@
-# Swift OEM Car Launcher (Android 8.1+ & 1GB RAM Optimized)
+# Swift OEM Car Launcher — Universal Vehicle Edition (Android 8.1+ & 1GB RAM Optimized)
 
 <div align="center">
 
 [![Vibecoded with Google Antigravity](https://img.shields.io/badge/Vibecoded%20with-Google%20Antigravity-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://antigravity.google)
 [![Platform](https://img.shields.io/badge/Platform-Android%208.1%2B-3DDC84?style=for-the-badge&logo=android&logoColor=white)](#)
 [![RAM Footprint](https://img.shields.io/badge/Resident%20RAM-~15--20MB-FF6F00?style=for-the-badge)](#)
+[![Customization](https://img.shields.io/badge/Cockpit-Fully%20Customizable-00E5FF?style=for-the-badge)](#)
 [![Language](https://img.shields.io/badge/Language-Kotlin%20%2F%20XML-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)](#)
 
-A lightweight, high-performance, OEM-styled Android Car Launcher designed specifically for low-resource Android head units (such as the 1GB RAM Topway TS7 running Android 8.1) as well as modern Samsung Galaxy devices (M30) repurposed as car displays.
+A lightweight, high-performance, OEM-styled Android Car Launcher designed specifically for low-resource Android head units (such as the 1GB RAM Topway TS7 running Android 8.1) as well as modern Samsung Galaxy devices (M30) repurposed as car displays — **fully normalized so any driver can customize it for their own car!**
 
 </div>
 
@@ -15,36 +16,49 @@ A lightweight, high-performance, OEM-styled Android Car Launcher designed specif
 
 ## ⚡ Vibecoded with Google Antigravity
 
-This entire project was **vibecoded end-to-end using Google Antigravity**, transforming natural language vision into a battle-tested, ultra-optimized Android automotive cockpit:
+This entire project was **vibecoded end-to-end using Google Antigravity**, translating rapid natural language prompts into a battle-tested, resource-thrifty, production-ready Android automotive cockpit:
 
 - **Constraint-First Engineering**: Designed and tuned to triumph over aggressive Low Memory Killer (LMK) limits on entry-level Android 8.1 head units with only 1GB RAM.
 - **Pure Native Performance**: Zero webview bloat, zero heavy Compose overhead—pure native Android Kotlin, `ConstraintLayout`, and vector graphics maintaining an astonishingly low ~15–20MB resident memory footprint.
-- **Iterative AI Polish**: From custom OEM UI theming (Arctic White / Midnight Black Swift dual-tone) to resilient offline weather caching (Open-Meteo) and 4-tier brightness cycles, every layer was vibe-crafted collaboratively with Antigravity.
+- **Universal Vehicle Customizer**: Originally created with a Swift cockpit theme, normalized via prompt-driven architecture into a universal car launcher supporting custom vehicle names, license plates, multi-silhouette presets, and custom gallery photos.
 
 ---
 
-## 🚗 Key Design & Performance Highlights
+## 🚗 Key Features & Dashboard Customization
 
-* **Ultra-Low Memory Footprint (~15–20MB Resident RAM)**: 
-  * Built using pure native Android Views (`ConstraintLayout` + XML drawables) instead of memory-heavy engines (Flutter, Compose, or KLWP).
-  * Prevents Android 8.1's Low Memory Killer (LMK) from killing the launcher when Open Headunit or ZLink streams video.
-* **Pixel-Accurate OEM Layout**:
-  * Clean, distraction-free cockpit aesthetic.
-  * Live digital clock (`TextClock`) with 0% CPU consumption.
-  * Live weather pill with automatic background sync (Open-Meteo API, no API key required) and offline cache fallback.
-  * Center hero render of the Maruti Suzuki Swift (dual-tone Arctic White & Midnight Black roof).
-* **Direct Driving Cards**:
-  1. **Android Auto (Blue)**: Default maps to `io.github.slashmax.openheadunit` (Wi-Fi Direct launch for Pixel 6a).
-  2. **Apple CarPlay (Green)**: Default maps to `com.zjinnova.zlink` (ZLink wireless/wired CarPlay).
-  3. **YouTube (Red)**: Maps to YouTube / ReVanced / NewPipe.
-  4. **All Apps (Dark Glass)**: Opens a sleek in-app grid drawer with instantaneous search.
-* **Smart App Re-Binding**:
-  * **Long-press** any of the 4 cards at any time to open the built-in app picker and assign it to any installed application on your unit (ideal if your TS7 uses a custom ZLink package name like `cn.manstep.phonemirrorbox` or `com.syu.zlink`).
-* **Quick Controls Bar**:
-  * **Wi-Fi**: Instant state toggle or long-press for Wi-Fi settings.
-  * **Bluetooth**: Instant shortcut to BT pairing.
-  * **Screen Brightness**: 4-stage brightness cycle (`100% Day` -> `50% Dusk` -> `15% Night Mode` -> `Auto`).
-  * **Settings**: Direct launch of Android Settings.
+### 1. 🚘 Universal Vehicle Dashboard Customizer
+Tap the car image or the vehicle badge at any time (or long-press the **Settings** card) to launch the in-cockpit Customizer:
+* **Custom Vehicle Model / Name**: Personalize your ride's name (e.g. *Maruti Suzuki Swift*, *Hyundai Creta*, *Honda Civic*, *BMW 3 Series*, *Tesla Model 3*).
+* **Official License Plate Tag**: Render your real registration plate (e.g. *TG08 G6391*, *KA 01 AB 1234*) in clean OEM plate typography, or leave empty to hide.
+* **Built-in Silhouette Presets**:
+  * 🚗 **Swift OEM Render**: Dual-tone Arctic White with Midnight Black floating roof.
+  * 🏎️ **Sport Sedan**: Aerodynamic executive saloon silhouette.
+  * 🚙 **Urban SUV / Crossover**: Muscular stance with roof rails.
+  * 🏁 **Sports GT**: Aggressive low-slung supercar coupe.
+  * ⚡ **Cyber EV**: Futuristic minimalist electric vehicle with neon LED lightbars.
+* **Upload Any Custom Car Photo / PNG**: Pick any photo of your actual car from your device gallery or downloads. Includes an intelligent in-memory downsampler that keeps resident RAM under 20MB even with 48MP camera photos!
+* **Car Display Scaling**: Choose between `85% Compact`, `100% Default`, and `115% Hero` scaling.
+
+### 2. ⚡ Ultra-Low Memory Footprint (~15–20MB Resident RAM)
+* Built using pure native Android Views (`ConstraintLayout` + XML drawables) instead of memory-heavy engines (Flutter, Compose, or KLWP).
+* Prevents Android 8.1's Low Memory Killer (LMK) from killing the launcher when Open Headunit or ZLink streams high-bitrate video.
+
+### 3. 🎯 Direct Driving Cards
+1. **Android Auto (Blue)**: Default maps to `io.github.slashmax.openheadunit` (Wi-Fi Direct launch for Pixel 6a).
+2. **Apple CarPlay (Green)**: Default maps to `com.zjinnova.zlink` (ZLink wireless/wired CarPlay).
+3. **YouTube (Red)**: Maps to YouTube / ReVanced / NewPipe.
+4. **Settings & All Apps (Frosted Glass)**: Direct access to system settings and full app drawer with real-time search.
+* **Smart App Re-Binding**: Long-press any card to re-bind it to any installed application on your unit (ideal if your TS7 uses custom package names like `cn.manstep.phonemirrorbox` or `com.syu.zlink`).
+
+### 4. 🎛️ Quick Controls Bar
+* **Wi-Fi**: Instant toggle or long-press for Wi-Fi settings.
+* **Bluetooth**: Direct shortcut to Bluetooth pairing.
+* **Screen Brightness**: 4-stage brightness cycle (`100% Day` -> `50% Dusk` -> `15% Night Mode` -> `Auto`).
+* **Volume**: Single-tap mute / unmute with automatic volume memory.
+
+### 5. ⛅ Live Weather & Digital Clock
+* **Live Weather Pill**: Automatic sync via Open-Meteo API (no API key required) with offline cache fallback. City location is fully configurable in the Customizer!
+* **TextClock**: 0% CPU consumption digital clock. Tap the clock at any time to toggle between 12-hour (AM/PM) and 24-hour formats.
 
 ---
 

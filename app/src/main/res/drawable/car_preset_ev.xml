@@ -1,0 +1,67 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="400dp"
+    android:height="200dp"
+    android:viewportWidth="400"
+    android:viewportHeight="200">
+
+    <!-- Ground shadow -->
+    <path
+        android:fillAlpha="0.3"
+        android:fillColor="#00E5FF"
+        android:pathData="M50,172 C120,182 280,182 350,172 C360,170 345,166 320,166 L80,166 C55,166 40,170 50,172 Z" />
+
+    <!-- Wheels (Aerodynamic Aero Disc Wheels) -->
+    <!-- Rear Wheel Outer -->
+    <path
+        android:fillColor="#0F172A"
+        android:pathData="M95,150 m-26,0 a26,26 0 1,0 52,0 a26,26 0 1,0 -52,0" />
+    <path
+        android:fillColor="#1E293B"
+        android:pathData="M95,150 m-18,0 a18,18 0 1,0 36,0 a18,18 0 1,0 -36,0" />
+    <path
+        android:fillColor="#00E5FF"
+        android:pathData="M95,150 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0" />
+
+    <!-- Front Wheel Outer -->
+    <path
+        android:fillColor="#0F172A"
+        android:pathData="M305,150 m-26,0 a26,26 0 1,0 52,0 a26,26 0 1,0 -52,0" />
+    <path
+        android:fillColor="#1E293B"
+        android:pathData="M305,150 m-18,0 a18,18 0 1,0 36,0 a18,18 0 1,0 -36,0" />
+    <path
+        android:fillColor="#00E5FF"
+        android:pathData="M305,150 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0" />
+
+    <!-- EV Body Shell (Sleek Titan Silver / Platinum) -->
+    <path
+        android:fillColor="#CBD5E1"
+        android:pathData="M45,140 C45,130 52,122 62,120 L80,118 C90,108 100,102 118,102 C128,102 138,108 142,118 L260,118 C265,108 275,102 292,102 C302,102 312,108 318,118 L355,120 C368,122 376,130 376,140 C376,148 370,154 360,154 L335,154 C333,142 320,132 305,132 C290,132 277,142 275,154 L125,154 C123,142 110,132 95,132 C80,132 67,142 65,154 L48,154 C43,154 45,148 45,140 Z" />
+
+    <!-- Glass Dome / Panoramic Canopy -->
+    <path
+        android:fillColor="#0F172A"
+        android:pathData="M110,118 L145,66 C155,56 172,52 195,52 L245,52 C265,52 282,58 295,72 L330,118 Z" />
+
+    <!-- Cyan Ambient Glass Glare -->
+    <path
+        android:fillColor="#38BDF8"
+        android:pathData="M152,70 L235,70 C250,70 262,75 272,85 L292,114 L132,114 Z" />
+
+    <!-- Futuristic Front LED Light Bar -->
+    <path
+        android:fillColor="#00E5FF"
+        android:pathData="M355,128 L374,133 L358,136 Z" />
+    <path
+        android:fillColor="#00E5FF"
+        android:pathData="M320,123 L372,130 L368,133 L318,126 Z" />
+
+    <!-- Cyber Neon Taillight Bar -->
+    <path
+        android:fillColor="#F43F5E"
+        android:pathData="M46,128 L54,133 L48,136 Z" />
+    <path
+        android:fillColor="#F43F5E"
+        android:pathData="M48,126 L90,122 L90,125 L50,129 Z" />
+
+</vector>

@@ -1,0 +1,76 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="400dp"
+    android:height="200dp"
+    android:viewportWidth="400"
+    android:viewportHeight="200">
+
+    <!-- Ground shadow -->
+    <path
+        android:fillAlpha="0.35"
+        android:fillColor="#000000"
+        android:pathData="M30,172 C100,188 300,188 370,172 C380,170 365,164 330,164 L70,164 C35,164 20,170 30,172 Z" />
+
+    <!-- Wheels (Bold SUV Wheels) -->
+    <!-- Rear Wheel Outer -->
+    <path
+        android:fillColor="#15171C"
+        android:pathData="M95,148 m-32,0 a32,32 0 1,0 64,0 a32,32 0 1,0 -64,0" />
+    <path
+        android:fillColor="#4B5563"
+        android:pathData="M95,148 m-20,0 a20,20 0 1,0 40,0 a20,20 0 1,0 -40,0" />
+    <path
+        android:fillColor="#9CA3AF"
+        android:pathData="M95,148 m-9,0 a9,9 0 1,0 18,0 a9,9 0 1,0 -18,0" />
+
+    <!-- Front Wheel Outer -->
+    <path
+        android:fillColor="#15171C"
+        android:pathData="M305,148 m-32,0 a32,32 0 1,0 64,0 a32,32 0 1,0 -64,0" />
+    <path
+        android:fillColor="#4B5563"
+        android:pathData="M305,148 m-20,0 a20,20 0 1,0 40,0 a20,20 0 1,0 -40,0" />
+    <path
+        android:fillColor="#9CA3AF"
+        android:pathData="M305,148 m-9,0 a9,9 0 1,0 18,0 a9,9 0 1,0 -18,0" />
+
+    <!-- SUV Main Body Shell -->
+    <path
+        android:fillColor="#059669"
+        android:pathData="M35,138 C35,128 42,118 52,116 L70,114 C80,98 90,92 115,92 C130,92 140,98 145,114 L255,114 C260,98 275,92 300,92 C315,92 325,98 335,114 L360,116 C372,118 380,126 380,138 C380,146 375,152 365,152 L340,152 C338,138 322,126 305,126 C288,126 272,138 270,152 L130,152 C128,138 112,126 95,126 C78,126 62,138 60,152 L42,152 C36,152 35,146 35,138 Z" />
+
+    <!-- SUV Upper Cabin / Boxy Roof -->
+    <path
+        android:fillColor="#047857"
+        android:pathData="M52,114 L75,58 C80,50 90,46 102,46 L270,46 C284,46 296,52 304,64 L335,114 Z" />
+
+    <!-- Roof Rails -->
+    <path
+        android:fillColor="#374151"
+        android:pathData="M110,40 L260,40 C264,40 266,42 266,44 L266,46 L104,46 L104,44 C104,42 106,40 110,40 Z" />
+
+    <!-- SUV Glass / Windows -->
+    <path
+        android:fillColor="#A7F3D0"
+        android:pathData="M85,62 L150,62 L150,108 L66,108 Z" />
+    <path
+        android:fillColor="#A7F3D0"
+        android:pathData="M160,62 L225,62 L225,108 L160,108 Z" />
+    <path
+        android:fillColor="#A7F3D0"
+        android:pathData="M235,62 L268,62 C276,62 284,66 290,74 L314,108 L235,108 Z" />
+
+    <!-- Headlight & Taillight -->
+    <path
+        android:fillColor="#FEF08A"
+        android:pathData="M370,122 L379,130 L365,134 Z" />
+    <path
+        android:fillColor="#F87171"
+        android:pathData="M36,122 L45,130 L38,134 Z" />
+
+    <!-- Highlights -->
+    <path
+        android:fillAlpha="0.3"
+        android:fillColor="#FFFFFF"
+        android:pathData="M100,50 L265,50 C275,50 285,55 292,66 L320,110 L310,110 L285,68 C278,58 268,54 258,54 L100,54 Z" />
+
+</vector>

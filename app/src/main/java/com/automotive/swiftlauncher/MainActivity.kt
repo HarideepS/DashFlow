@@ -1,17 +1,24 @@
 package com.automotive.swiftlauncher
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.AudioManager
+import android.net.Uri
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import android.view.WindowManager
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +26,8 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.automotive.swiftlauncher.databinding.ActivityMainBinding
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -33,6 +42,7 @@ class MainActivity : AppCompatActivity() {
 
     private var targetRebindKey: String? = null
     private var lastNonZeroVolume: Int = 8
+    private var pendingDialogDismiss: (() -> Unit)? = null
 
     // Activity Result Launcher for re-binding cards
     private val appPickerLauncher = registerForActivityResult(
@@ -57,6 +67,15 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+        }
+    }
+
+    // Activity Result Launcher for picking custom car image from gallery
+    private val imagePickerLauncher = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            saveCustomCarImage(uri)
         }
     }
 
@@ -87,6 +106,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         setupClockAndDate()
+        setupVehicleDisplay()
         setupCards()
         setupToggles()
         loadWeather()
@@ -98,6 +118,7 @@ class MainActivity : AppCompatActivity() {
         updateWifiState()
         updateVolumeState()
         updateDateText()
+        applyVehicleCustomizations()
 
         val filter = IntentFilter().apply {
             addAction(WifiManager.WIFI_STATE_CHANGED_ACTION)
@@ -117,7 +138,7 @@ class MainActivity : AppCompatActivity() {
         applyClockFormat(prefs.is24HourFormat)
         updateDateText()
 
-        // Tapping the time / date area toggles 12h vs 24h format!
+        // Tapping the time / date area toggles 12h vs 24h format
         binding.clockContainer.setOnClickListener {
             prefs.is24HourFormat = !prefs.is24HourFormat
             applyClockFormat(prefs.is24HourFormat)
@@ -146,7 +167,203 @@ class MainActivity : AppCompatActivity() {
         binding.textDayDate.text = dayFormat.format(Date())
     }
 
+    private fun setupVehicleDisplay() {
+        applyVehicleCustomizations()
 
+        // Tapping the car or vehicle info badge opens the Vehicle Customizer
+        binding.imageCar.setOnClickListener {
+            showVehicleSettingsDialog()
+        }
+        binding.vehicleInfoContainer.setOnClickListener {
+            showVehicleSettingsDialog()
+        }
+    }
+
+    private fun applyVehicleCustomizations() {
+        // 1. Vehicle Model Name
+        binding.textVehicleName.text = prefs.vehicleName.uppercase(Locale.getDefault())
+
+        // 2. License Plate / Tag
+        val plate = prefs.licensePlate.trim()
+        if (plate.isNotEmpty()) {
+            binding.textLicensePlate.visibility = View.VISIBLE
+            binding.textLicensePlate.text = plate.uppercase(Locale.getDefault())
+        } else {
+            binding.textLicensePlate.visibility = View.GONE
+        }
+
+        // 3. Display Scaling
+        binding.imageCar.scaleX = prefs.carScale
+        binding.imageCar.scaleY = prefs.carScale
+
+        // 4. Car Visual (Custom Image vs Built-in Presets)
+        if (prefs.carPreset == PreferenceHelper.PRESET_CUSTOM && prefs.customCarPath.isNotBlank()) {
+            val file = File(prefs.customCarPath)
+            if (file.exists()) {
+                val bitmap = loadCustomCarBitmap(file.absolutePath)
+                if (bitmap != null) {
+                    binding.imageCar.setImageBitmap(bitmap)
+                    return
+                }
+            }
+        }
+
+        val resId = when (prefs.carPreset) {
+            PreferenceHelper.PRESET_SEDAN -> R.drawable.car_preset_sedan
+            PreferenceHelper.PRESET_SUV -> R.drawable.car_preset_suv
+            PreferenceHelper.PRESET_SPORTS -> R.drawable.car_preset_sports
+            PreferenceHelper.PRESET_EV -> R.drawable.car_preset_ev
+            else -> R.drawable.car_swift
+        }
+        binding.imageCar.setImageResource(resId)
+    }
+
+    private fun loadCustomCarBitmap(path: String): Bitmap? {
+        return try {
+            val options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            BitmapFactory.decodeFile(path, options)
+            var sampleSize = 1
+            while (options.outWidth / sampleSize > 1024 || options.outHeight / sampleSize > 600) {
+                sampleSize *= 2
+            }
+            val decodeOptions = BitmapFactory.Options().apply {
+                inSampleSize = sampleSize
+                inPreferredConfig = Bitmap.Config.ARGB_8888
+            }
+            BitmapFactory.decodeFile(path, decodeOptions)
+        } catch (_: Exception) {
+            null
+        }
+    }
+
+    private fun saveCustomCarImage(uri: Uri) {
+        try {
+            contentResolver.openInputStream(uri)?.use { inputStream ->
+                val customFile = File(filesDir, "custom_car_display.png")
+                FileOutputStream(customFile).use { outputStream ->
+                    inputStream.copyTo(outputStream)
+                }
+                prefs.carPreset = PreferenceHelper.PRESET_CUSTOM
+                prefs.customCarPath = customFile.absolutePath
+                applyVehicleCustomizations()
+                Toast.makeText(this, "Custom vehicle photo applied!", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            Toast.makeText(this, "Could not load image: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showVehicleSettingsDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_launcher_settings, null)
+        val editVehicleName = dialogView.findViewById<EditText>(R.id.editVehicleName)
+        val editLicensePlate = dialogView.findViewById<EditText>(R.id.editLicensePlate)
+        val editCity = dialogView.findViewById<EditText>(R.id.editCity)
+        val textCarVisualStatus = dialogView.findViewById<TextView>(R.id.textCarVisualStatus)
+        val btnClearCustomImage = dialogView.findViewById<Button>(R.id.btnClearCustomImage)
+
+        var selectedPreset = prefs.carPreset
+        var selectedScale = prefs.carScale
+
+        editVehicleName.setText(prefs.vehicleName)
+        editLicensePlate.setText(prefs.licensePlate)
+        editCity.setText(prefs.cityName)
+
+        fun updateVisualStatusUI() {
+            if (selectedPreset == PreferenceHelper.PRESET_CUSTOM && prefs.customCarPath.isNotBlank()) {
+                textCarVisualStatus.text = "Active visual: Custom Gallery Photo"
+                btnClearCustomImage.visibility = View.VISIBLE
+            } else {
+                val label = when (selectedPreset) {
+                    PreferenceHelper.PRESET_SEDAN -> "Sedan (Sport Silhouette)"
+                    PreferenceHelper.PRESET_SUV -> "SUV (Crossover Silhouette)"
+                    PreferenceHelper.PRESET_SPORTS -> "Sports GT (Supercar Silhouette)"
+                    PreferenceHelper.PRESET_EV -> "Cyber EV (Electric Silhouette)"
+                    else -> "Swift (OEM Render)"
+                }
+                textCarVisualStatus.text = "Active visual: $label"
+                btnClearCustomImage.visibility = View.GONE
+            }
+        }
+        updateVisualStatusUI()
+
+        dialogView.findViewById<Button>(R.id.btnPresetSwift).setOnClickListener {
+            selectedPreset = PreferenceHelper.PRESET_SWIFT
+            updateVisualStatusUI()
+        }
+        dialogView.findViewById<Button>(R.id.btnPresetSedan).setOnClickListener {
+            selectedPreset = PreferenceHelper.PRESET_SEDAN
+            updateVisualStatusUI()
+        }
+        dialogView.findViewById<Button>(R.id.btnPresetSuv).setOnClickListener {
+            selectedPreset = PreferenceHelper.PRESET_SUV
+            updateVisualStatusUI()
+        }
+        dialogView.findViewById<Button>(R.id.btnPresetSports).setOnClickListener {
+            selectedPreset = PreferenceHelper.PRESET_SPORTS
+            updateVisualStatusUI()
+        }
+        dialogView.findViewById<Button>(R.id.btnPresetEv).setOnClickListener {
+            selectedPreset = PreferenceHelper.PRESET_EV
+            updateVisualStatusUI()
+        }
+
+        dialogView.findViewById<Button>(R.id.btnPickCustomImage).setOnClickListener {
+            pendingDialogDismiss?.invoke()
+            imagePickerLauncher.launch("image/*")
+        }
+
+        btnClearCustomImage.setOnClickListener {
+            selectedPreset = PreferenceHelper.PRESET_SWIFT
+            prefs.customCarPath = ""
+            updateVisualStatusUI()
+        }
+
+        dialogView.findViewById<Button>(R.id.btnSizeSmall).setOnClickListener {
+            selectedScale = 0.85f
+            Toast.makeText(this, "Scale: 85% Compact", Toast.LENGTH_SHORT).show()
+        }
+        dialogView.findViewById<Button>(R.id.btnSizeNormal).setOnClickListener {
+            selectedScale = 1.0f
+            Toast.makeText(this, "Scale: 100% Default", Toast.LENGTH_SHORT).show()
+        }
+        dialogView.findViewById<Button>(R.id.btnSizeLarge).setOnClickListener {
+            selectedScale = 1.15f
+            Toast.makeText(this, "Scale: 115% Hero", Toast.LENGTH_SHORT).show()
+        }
+
+        val dialog = AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_NoActionBar)
+            .setView(dialogView)
+            .create()
+
+        pendingDialogDismiss = { dialog.dismiss() }
+
+        dialogView.findViewById<Button>(R.id.btnCancelSettings).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialogView.findViewById<Button>(R.id.btnSaveSettings).setOnClickListener {
+            val newName = editVehicleName.text.toString().trim()
+            val newPlate = editLicensePlate.text.toString().trim()
+            val newCity = editCity.text.toString().trim()
+
+            prefs.vehicleName = if (newName.isNotBlank()) newName else PreferenceHelper.DEFAULT_VEHICLE_NAME
+            prefs.licensePlate = newPlate
+            prefs.carPreset = selectedPreset
+            prefs.carScale = selectedScale
+
+            val cityChanged = newCity.isNotBlank() && newCity != prefs.cityName
+            if (cityChanged) {
+                prefs.cityName = newCity
+                loadWeather()
+            }
+
+            applyVehicleCustomizations()
+            dialog.dismiss()
+            Toast.makeText(this, "Vehicle settings applied!", Toast.LENGTH_SHORT).show()
+        }
+
+        dialog.show()
+    }
 
     private fun setupCards() {
         // 1. Android Auto (Square Card with Official AA Icon)
@@ -188,9 +405,13 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-        // 4. Settings (Rectangle Tile)
+        // 4. Settings (Rectangle Tile) - tap opens system settings, long-press opens vehicle customizer!
         binding.cardSettings.setOnClickListener {
             startActivity(Intent(Settings.ACTION_SETTINGS))
+        }
+        binding.cardSettings.setOnLongClickListener {
+            showVehicleSettingsDialog()
+            true
         }
 
         // 5. All Apps (Rectangle Tile)

@@ -79,7 +79,7 @@
             tools:text="Hyderabad, 24°C Clear" />
     </LinearLayout>
 
-    <!-- Center Hero: Swift Car with clean transparent background -->
+    <!-- Center Hero: Customizable Car with clean transparent background -->
     <ImageView
         android:id="@+id/imageCar"
         android:layout_width="0dp"
@@ -87,15 +87,73 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="2dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="6dp"
+        android:layout_marginBottom="4dp"
         android:adjustViewBounds="true"
-        android:contentDescription="Maruti Suzuki Swift"
+        android:clickable="true"
+        android:contentDescription="Car Dashboard Display"
+        android:focusable="true"
         android:scaleType="fitCenter"
         android:src="@drawable/car_swift"
-        app:layout_constraintBottom_toTopOf="@+id/togglesContainer"
+        app:layout_constraintBottom_toTopOf="@+id/vehicleInfoContainer"
         app:layout_constraintEnd_toStartOf="@+id/guidelineCenter"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/weatherContainer" />
+
+    <!-- Vehicle Info Badge: Model Name & License Plate (Tap to customize) -->
+    <LinearLayout
+        android:id="@+id/vehicleInfoContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="6dp"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        app:layout_constraintBottom_toTopOf="@+id/togglesContainer"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineCenter"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/textVehicleName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.08"
+            android:textColor="#C5D0E6"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            tools:text="MARUTI SUZUKI SWIFT" />
+
+        <TextView
+            android:id="@+id/textLicensePlate"
+            android:layout_width="wrap_content"
+            android:layout_height="22dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_license_plate"
+            android:gravity="center"
+            android:letterSpacing="0.06"
+            android:paddingStart="7dp"
+            android:paddingEnd="7dp"
+            android:textColor="#1A202C"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            tools:text="TG08 G6391" />
+
+        <ImageView
+            android:id="@+id/iconCustomizeVehicle"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_marginStart="6dp"
+            android:alpha="0.75"
+            android:contentDescription="Customize Vehicle"
+            android:src="@drawable/ic_sparkle"
+            app:tint="#60A5FA" />
+    </LinearLayout>
 
     <!-- Bottom Quick Controls Bar: Exactly 4 Toggles (Wi-Fi, Bluetooth, Auto Bright, Volume) -->
     <LinearLayout

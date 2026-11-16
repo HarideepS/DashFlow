@@ -16,4 +16,7 @@
     <string name="rebind_prompt">Assign application to shortcut</string>
     <string name="search_apps">Search applications...</string>
     <string name="no_apps_found">No applications found</string>
+    <string name="customize_vehicle">Customize Vehicle</string>
+    <string name="default_vehicle_name">Maruti Suzuki Swift</string>
+    <string name="default_license_plate">TG08 G6391</string>
 </resources>

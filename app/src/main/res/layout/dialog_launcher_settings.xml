@@ -4,73 +4,269 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#161B26"
-    android:padding="24dp">
+    android:padding="20dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <!-- Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-medium"
-            android:text="Cockpit &amp; Launcher Settings"
-            android:textColor="@color/text_primary"
-            android:textSize="20sp" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Customize your layout on the fly"
-            android:textColor="@color/text_secondary"
-            android:textSize="13sp" />
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/ic_launcher_car" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Vehicle &amp; Dashboard Customizer"
+                    android:textColor="@color/text_primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Customize vehicle model, plate &amp; dashboard visuals"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="12dp"
             android:layout_marginBottom="14dp"
             android:background="#273042" />
+
+        <!-- 1. VEHICLE IDENTITY SECTION -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:text="1. Vehicle Identity"
+            android:textColor="#3B82F6"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <!-- Vehicle Name -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="Vehicle Model / Display Name"
+            android:textColor="@color/text_primary"
+            android:textSize="13sp" />
+
+        <EditText
+            android:id="@+id/editVehicleName"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/bg_toggle_pill"
+            android:hint="e.g. Maruti Suzuki Swift, Hyundai Creta, Honda Civic"
+            android:inputType="textCapWords"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_tertiary"
+            android:textSize="14sp" />
 
         <!-- License Plate -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:fontFamily="sans-serif-medium"
-            android:text="Vehicle License Plate"
+            android:text="Vehicle License Plate / Tag"
             android:textColor="@color/text_primary"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
 
         <EditText
             android:id="@+id/editLicensePlate"
             android:layout_width="match_parent"
-            android:layout_height="46dp"
-            android:layout_marginTop="6dp"
+            android:layout_height="44dp"
+            android:layout_marginTop="4dp"
             android:background="@drawable/bg_toggle_pill"
-            android:hint="e.g. TG08 G6391"
+            android:hint="e.g. TG08 G6391 (leave empty to hide)"
             android:inputType="textCapCharacters"
             android:paddingStart="14dp"
             android:paddingEnd="14dp"
             android:textColor="@color/text_primary"
             android:textColorHint="@color/text_tertiary"
-            android:textSize="15sp" />
+            android:textSize="14sp" />
 
-        <!-- Car Sizing -->
+        <!-- 2. CAR VISUAL PRESETS & CUSTOM UPLOAD -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:fontFamily="sans-serif-medium"
-            android:text="Car Display Size"
-            android:textColor="@color/text_primary"
-            android:textSize="14sp" />
+            android:text="2. Dashboard Car Visual"
+            android:textColor="#3B82F6"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Select a built-in silhouette preset or pick a custom photo of your own car:"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <!-- Presets Row 1 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnPresetSwift"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:padding="0dp"
+                android:text="Swift"
+                android:textColor="@color/text_primary"
+                android:textSize="12sp"
+                app:strokeColor="#2F3A50" />
+
+            <Button
+                android:id="@+id/btnPresetSedan"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:padding="0dp"
+                android:text="Sedan"
+                android:textColor="@color/text_primary"
+                android:textSize="12sp"
+                app:strokeColor="#2F3A50" />
+
+            <Button
+                android:id="@+id/btnPresetSuv"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="0dp"
+                android:text="SUV"
+                android:textColor="@color/text_primary"
+                android:textSize="12sp"
+                app:strokeColor="#2F3A50" />
+        </LinearLayout>
+
+        <!-- Presets Row 2 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnPresetSports"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:padding="0dp"
+                android:text="Sports GT"
+                android:textColor="@color/text_primary"
+                android:textSize="12sp"
+                app:strokeColor="#2F3A50" />
+
+            <Button
+                android:id="@+id/btnPresetEv"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="0dp"
+                android:text="Cyber EV"
+                android:textColor="@color/text_primary"
+                android:textSize="12sp"
+                app:strokeColor="#2F3A50" />
+        </LinearLayout>
+
+        <!-- Custom Image Picker -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnPickCustomImage"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:text="📷 Choose Photo from Gallery"
+                android:textColor="#60A5FA"
+                android:textSize="12sp"
+                app:strokeColor="#3B82F6" />
+
+            <Button
+                android:id="@+id/btnClearCustomImage"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:text="Clear Photo"
+                android:textColor="#F87171"
+                android:textSize="12sp"
+                android:visibility="gone"
+                app:strokeColor="#EF4444" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textCarVisualStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Active visual: Swift render"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <!-- 3. CAR DISPLAY SIZING -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="3. Car Scale / Display Sizing"
+            android:textColor="#3B82F6"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:layout_marginTop="6dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
             android:orientation="horizontal">
 
             <Button
@@ -78,7 +274,7 @@
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="6dp"
                 android:layout_weight="1"
                 android:text="85% Compact"
                 android:textColor="@color/text_primary"
@@ -90,7 +286,7 @@
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="6dp"
                 android:layout_weight="1"
                 android:text="100% Default"
                 android:textColor="@color/text_primary"
@@ -109,61 +305,60 @@
                 app:strokeColor="#2F3A50" />
         </LinearLayout>
 
-        <!-- 3D Rotation Behavior -->
+        <!-- 4. WEATHER LOCATION -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:fontFamily="sans-serif-medium"
-            android:text="3D Touch Rotation"
-            android:textColor="@color/text_primary"
-            android:textSize="14sp" />
-
-        <CheckBox
-            android:id="@+id/checkFreeRotate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:buttonTint="@color/card_android_auto"
-            android:text="Keep rotation angle (uncheck to snap back to center)"
-            android:textColor="@color/text_secondary"
-            android:textSize="13sp" />
-
-        <!-- Weather City -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            android:fontFamily="sans-serif-medium"
-            android:text="Weather City Name"
-            android:textColor="@color/text_primary"
-            android:textSize="14sp" />
+            android:text="4. Weather City Location"
+            android:textColor="#3B82F6"
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/editCity"
             android:layout_width="match_parent"
-            android:layout_height="46dp"
-            android:layout_marginTop="6dp"
+            android:layout_height="44dp"
+            android:layout_marginTop="4dp"
             android:background="@drawable/bg_toggle_pill"
-            android:hint="Hyderabad"
+            android:hint="e.g. Hyderabad, London, Los Angeles"
             android:inputType="textCapWords"
             android:paddingStart="14dp"
             android:paddingEnd="14dp"
             android:textColor="@color/text_primary"
             android:textColorHint="@color/text_tertiary"
-            android:textSize="15sp" />
+            android:textSize="14sp" />
 
-        <!-- Save button -->
-        <Button
-            android:id="@+id/btnSaveSettings"
+        <!-- ACTION BUTTONS -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="22dp"
-            android:backgroundTint="@color/card_android_auto"
-            android:fontFamily="sans-serif-medium"
-            android:text="Save &amp; Apply"
-            android:textColor="@color/text_primary"
-            android:textSize="15sp" />
+            android:layout_height="48dp"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnCancelSettings"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:text="Cancel"
+                android:textColor="@color/text_secondary"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/btnSaveSettings"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:backgroundTint="@color/card_android_auto"
+                android:fontFamily="sans-serif-medium"
+                android:text="Save &amp; Apply"
+                android:textColor="@color/text_primary"
+                android:textSize="14sp" />
+        </LinearLayout>
 
     </LinearLayout>
 </ScrollView>

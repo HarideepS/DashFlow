@@ -1,0 +1,82 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="400dp"
+    android:height="200dp"
+    android:viewportWidth="400"
+    android:viewportHeight="200">
+
+    <!-- Ground shadow -->
+    <path
+        android:fillAlpha="0.4"
+        android:fillColor="#000000"
+        android:pathData="M30,172 C100,186 300,186 370,172 C380,170 365,164 330,164 L70,164 C35,164 20,170 30,172 Z" />
+
+    <!-- Wheels (Low profile alloy rims) -->
+    <!-- Rear Wheel Outer -->
+    <path
+        android:fillColor="#0F1115"
+        android:pathData="M95,152 m-26,0 a26,26 0 1,0 52,0 a26,26 0 1,0 -52,0" />
+    <path
+        android:fillColor="#DC2626"
+        android:pathData="M95,152 m-18,0 a18,18 0 1,0 36,0 a18,18 0 1,0 -36,0" />
+    <path
+        android:fillColor="#1F2937"
+        android:pathData="M95,152 m-14,0 a14,14 0 1,0 28,0 a14,14 0 1,0 -28,0" />
+    <path
+        android:fillColor="#E5E7EB"
+        android:pathData="M95,152 m-6,0 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0" />
+
+    <!-- Front Wheel Outer -->
+    <path
+        android:fillColor="#0F1115"
+        android:pathData="M310,152 m-26,0 a26,26 0 1,0 52,0 a26,26 0 1,0 -52,0" />
+    <path
+        android:fillColor="#DC2626"
+        android:pathData="M310,152 m-18,0 a18,18 0 1,0 36,0 a18,18 0 1,0 -36,0" />
+    <path
+        android:fillColor="#1F2937"
+        android:pathData="M310,152 m-14,0 a14,14 0 1,0 28,0 a14,14 0 1,0 -28,0" />
+    <path
+        android:fillColor="#E5E7EB"
+        android:pathData="M310,152 m-6,0 a6,6 0 1,0 12,0 a6,6 0 1,0 -12,0" />
+
+    <!-- Rear Spoiler / Wing -->
+    <path
+        android:fillColor="#111827"
+        android:pathData="M30,110 L50,110 L55,124 L25,124 Z" />
+    <path
+        android:fillColor="#111827"
+        android:pathData="M20,106 L65,106 L60,112 L25,112 Z" />
+
+    <!-- Sports Car Body Shell (Sleek red) -->
+    <path
+        android:fillColor="#DC2626"
+        android:pathData="M35,142 C35,134 42,126 55,125 L75,122 C85,112 95,106 115,106 C125,106 135,112 140,122 L265,122 C270,112 280,106 300,106 C310,106 320,112 325,122 L360,126 C374,128 382,136 382,146 C382,152 376,156 366,156 L340,156 C338,144 325,134 310,134 C295,134 282,144 280,156 L125,156 C123,144 110,134 95,134 C80,134 67,144 65,156 L44,156 C38,156 35,150 35,142 Z" />
+
+    <!-- Low Cockpit / Canopy -->
+    <path
+        android:fillColor="#991B1B"
+        android:pathData="M110,122 L150,80 C158,72 170,68 185,68 L245,68 C260,68 274,74 285,86 L320,122 Z" />
+
+    <!-- Dark Tint Glass -->
+    <path
+        android:fillColor="#1E293B"
+        android:pathData="M155,84 L200,84 L200,118 L125,118 Z" />
+    <path
+        android:fillColor="#1E293B"
+        android:pathData="M210,84 L245,84 C255,84 265,88 272,98 L296,118 L210,118 Z" />
+
+    <!-- Aggressive Headlight & Taillight -->
+    <path
+        android:fillColor="#67E8F9"
+        android:pathData="M368,130 L380,138 L364,142 Z" />
+    <path
+        android:fillColor="#FFA5A5"
+        android:pathData="M36,132 L46,138 L40,142 Z" />
+
+    <!-- Reflection line -->
+    <path
+        android:fillAlpha="0.4"
+        android:fillColor="#FFFFFF"
+        android:pathData="M175,70 L245,70 C255,70 265,75 272,85 L305,120 L295,120 L268,88 C262,80 252,76 242,76 L170,76 Z" />
+
+</vector>
