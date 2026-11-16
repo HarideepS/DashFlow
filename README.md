@@ -8,6 +8,12 @@
 [![Customization](https://img.shields.io/badge/Cockpit-Fully%20Customizable-00E5FF?style=for-the-badge)](#)
 [![Language](https://img.shields.io/badge/Language-Kotlin%20%2F%20XML-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)](#)
 
+<br/><br/>
+
+<img src="assets/dashboard-preview.jpg" alt="DashFlow Cockpit Dashboard Preview" width="100%" />
+
+<br/><br/>
+
 **DashFlow** is a lightweight, high-performance, OEM-styled Android Car Launcher designed specifically for low-resource Android head units (including 1GB RAM units running Android 8.1+) as well as your tablet/phone repurposed as a car display — **fully normalized so any driver can customize it for their own car!**
 
 </div>
