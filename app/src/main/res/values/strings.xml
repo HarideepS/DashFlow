@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Swift Car Launcher</string>
+    <string name="app_name">DashFlow</string>
     <string name="android_auto">Android Auto</string>
     <string name="apple_carplay">Apple CarPlay</string>
     <string name="youtube">YouTube</string>

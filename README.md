@@ -1,4 +1,4 @@
-# Swift OEM Car Launcher — Universal Vehicle Edition (Android 8.1+ & 1GB RAM Optimized)
+# DashFlow — Universal OEM Car Launcher (Android 8.1+ & 1GB RAM Optimized)
 
 <div align="center">
 
@@ -8,7 +8,7 @@
 [![Customization](https://img.shields.io/badge/Cockpit-Fully%20Customizable-00E5FF?style=for-the-badge)](#)
 [![Language](https://img.shields.io/badge/Language-Kotlin%20%2F%20XML-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)](#)
 
-A lightweight, high-performance, OEM-styled Android Car Launcher designed specifically for low-resource Android head units (such as the 1GB RAM Topway TS7 running Android 8.1) as well as modern Samsung Galaxy devices (M30) repurposed as car displays — **fully normalized so any driver can customize it for their own car!**
+**DashFlow** is a lightweight, high-performance, OEM-styled Android Car Launcher designed specifically for low-resource Android head units (such as the 1GB RAM Topway TS7 running Android 8.1) as well as modern Samsung Galaxy devices (M30) repurposed as car displays — **fully normalized so any driver can customize it for their own car!**
 
 </div>
 
