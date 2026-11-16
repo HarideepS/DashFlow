@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="#33FFFFFF">
+    <item>
+        <shape android:shape="rectangle">
+            <!-- Premium Automotive Smoked Frosted Glass -->
+            <gradient
+                android:angle="135"
+                android:startColor="#263144"
+                android:centerColor="#1B2332"
+                android:endColor="#131924"
+                android:type="linear" />
+            <stroke
+                android:width="1.3dp"
+                android:color="#3D506E" />
+            <corners android:radius="26dp" />
+        </shape>
+    </item>
+</ripple>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Swift Car Launcher</string>
+    <string name="android_auto">Android Auto</string>
+    <string name="apple_carplay">Apple CarPlay</string>
+    <string name="youtube">YouTube</string>
+    <string name="all_apps">All Apps</string>
+    <string name="wifi">Wi-Fi</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="auto_brightness">Auto Bright</string>
+    <string name="volume">Volume</string>
+    <string name="brightness">Brightness</string>
+    <string name="settings">Settings</string>
+    <string name="default_city">Hyderabad</string>
+    <string name="default_weather">28°C Haze</string>
+    <string name="rebind_prompt">Assign application to shortcut</string>
+    <string name="search_apps">Search applications...</string>
+    <string name="no_apps_found">No applications found</string>
+</resources>

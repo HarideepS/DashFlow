@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_dashboard"
+    android:paddingStart="22dp"
+    android:paddingTop="16dp"
+    android:paddingEnd="22dp"
+    android:paddingBottom="16dp">
+
+    <!-- ======================================================== -->
+    <!-- LEFT PANEL: Clock, Day, Weather, Swift Hero, Controls     -->
+    <!-- ======================================================== -->
+
+    <!-- Clock & Day Container (Tap to toggle 12h / 24h) -->
+    <LinearLayout
+        android:id="@+id/clockContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextClock
+            android:id="@+id/textClock"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:format12Hour="hh:mm a"
+            android:format24Hour="HH:mm"
+            android:textColor="@color/text_time"
+            android:textSize="56sp"
+            tools:text="12:14 AM" />
+
+        <TextView
+            android:id="@+id/textDayDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="#4D7DF0"
+            android:textSize="18sp"
+            tools:text="Saturday" />
+    </LinearLayout>
+
+    <!-- Weather container with condition icon and location/temp -->
+    <LinearLayout
+        android:id="@+id/weatherContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@+id/clockContainer"
+        app:layout_constraintTop_toBottomOf="@+id/clockContainer">
+
+        <ImageView
+            android:id="@+id/iconWeather"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_weather_drizzle" />
+
+        <TextView
+            android:id="@+id/textWeather"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:text="@string/default_weather"
+            android:textColor="@color/text_secondary"
+            android:textSize="16sp"
+            tools:text="Hyderabad, 24°C Clear" />
+    </LinearLayout>
+
+    <!-- Center Hero: Swift Car with clean transparent background -->
+    <ImageView
+        android:id="@+id/imageCar"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="6dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="Maruti Suzuki Swift"
+        android:scaleType="fitCenter"
+        android:src="@drawable/car_swift"
+        app:layout_constraintBottom_toTopOf="@+id/togglesContainer"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineCenter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/weatherContainer" />
+
+    <!-- Bottom Quick Controls Bar: Exactly 4 Toggles (Wi-Fi, Bluetooth, Auto Bright, Volume) -->
+    <LinearLayout
+        android:id="@+id/togglesContainer"
+        android:layout_width="0dp"
+        android:layout_height="72dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="2dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineCenter"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <!-- 1. Wi-Fi Toggle -->
+        <LinearLayout
+            android:id="@+id/btnWifi"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_toggle_pill"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="6dp">
+
+            <ImageView
+                android:id="@+id/iconWifi"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_wifi"
+                app:tint="@color/text_primary" />
+
+            <TextView
+                android:id="@+id/labelWifi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/wifi"
+                android:textColor="@color/toggle_text"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!-- 2. Bluetooth Toggle -->
+        <LinearLayout
+            android:id="@+id/btnBluetooth"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_toggle_pill"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="6dp">
+
+            <ImageView
+                android:id="@+id/iconBluetooth"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_bluetooth"
+                app:tint="@color/text_primary" />
+
+            <TextView
+                android:id="@+id/labelBluetooth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/bluetooth"
+                android:textColor="@color/toggle_text"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!-- 3. Auto Brightness Toggle -->
+        <LinearLayout
+            android:id="@+id/btnBrightness"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_toggle_pill"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="6dp">
+
+            <ImageView
+                android:id="@+id/iconBrightness"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_brightness"
+                app:tint="@color/text_primary" />
+
+            <TextView
+                android:id="@+id/labelBrightness"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/auto_brightness"
+                android:textColor="@color/toggle_text"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!-- 4. System Media Volume Toggle (Mute / Unmute) -->
+        <LinearLayout
+            android:id="@+id/btnVolume"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/bg_toggle_pill"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="6dp">
+
+            <ImageView
+                android:id="@+id/iconVolume"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_volume_up"
+                app:tint="@color/text_primary" />
+
+            <TextView
+                android:id="@+id/labelVolume"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/volume"
+                android:textColor="@color/toggle_text"
+                android:textSize="13sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Guideline dividing Left (~58%) and Right (~42%) -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineCenter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.58" />
+
+    <!-- ================================================================== -->
+    <!-- RIGHT PANEL: Symmetrical 2x2 Grid with Stacked Settings & All Apps -->
+    <!-- Row 1: Android Auto (Square) | Apple CarPlay (Square)              -->
+    <!-- Row 2: YouTube (Square)      | Settings (Rect) / All Apps (Rect)   -->
+    <!-- ================================================================== -->
+    <LinearLayout
+        android:id="@+id/rightPanelContainer"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/guidelineCenter"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- TOP ROW: Android Auto & Apple CarPlay (Squares) -->
+        <LinearLayout
+            android:id="@+id/rowTopCards"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="12dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <!-- SQUARE 1: Android Auto -->
+            <LinearLayout
+                android:id="@+id/cardAndroidAuto"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_card_frosted_square"
+                android:clickable="true"
+                android:elevation="4dp"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <ImageView
+                    android:id="@+id/iconCardAA"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/ic_aa_custom" />
+
+                <TextView
+                    android:id="@+id/textCardAA"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/android_auto"
+                    android:textAlignment="center"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- SQUARE 2: Apple CarPlay -->
+            <LinearLayout
+                android:id="@+id/cardCarPlay"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_card_frosted_square"
+                android:clickable="true"
+                android:elevation="4dp"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <ImageView
+                    android:id="@+id/iconCardCarPlay"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/ic_carplay_custom" />
+
+                <TextView
+                    android:id="@+id/textCardCarPlay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/apple_carplay"
+                    android:textAlignment="center"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- BOTTOM ROW: YouTube (Square) + Stacked Settings / All Apps (2 Rectangles) -->
+        <LinearLayout
+            android:id="@+id/rowBottomCards"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <!-- SQUARE 3: YouTube (Square, matching AA & CarPlay size) -->
+            <LinearLayout
+                android:id="@+id/cardYouTube"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_card_frosted_square"
+                android:clickable="true"
+                android:elevation="4dp"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <ImageView
+                    android:id="@+id/iconCardYouTube"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/ic_youtube"
+                    app:tint="#FF0000" />
+
+                <TextView
+                    android:id="@+id/textCardYouTube"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/youtube"
+                    android:textAlignment="center"
+                    android:textColor="@color/text_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- QUADRANT 4: TWO RECTANGLES (Settings on Top + All Apps on Bottom) -->
+            <LinearLayout
+                android:id="@+id/colRightBottom"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:weightSum="2">
+
+                <!-- RECTANGLE 1: Settings -->
+                <RelativeLayout
+                    android:id="@+id/cardSettings"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginBottom="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_card_frosted_rect"
+                    android:clickable="true"
+                    android:elevation="3dp"
+                    android:focusable="true"
+                    android:paddingStart="18dp"
+                    android:paddingEnd="16dp">
+
+                    <ImageView
+                        android:id="@+id/iconCardSettings"
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_settings"
+                        app:tint="@color/text_primary" />
+
+                    <TextView
+                        android:id="@+id/textCardSettings"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="14dp"
+                        android:layout_toEndOf="@+id/iconCardSettings"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/settings"
+                        android:textColor="@color/text_primary"
+                        android:textSize="19sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:contentDescription="Open Settings"
+                        android:src="@drawable/ic_chevron_right"
+                        app:tint="#5A6C88" />
+                </RelativeLayout>
+
+                <!-- RECTANGLE 2: All Apps -->
+                <RelativeLayout
+                    android:id="@+id/cardAllApps"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_card_frosted_rect"
+                    android:clickable="true"
+                    android:elevation="3dp"
+                    android:focusable="true"
+                    android:paddingStart="18dp"
+                    android:paddingEnd="16dp">
+
+                    <ImageView
+                        android:id="@+id/iconCardAllApps"
+                        android:layout_width="42dp"
+                        android:layout_height="42dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_apps"
+                        app:tint="#D2D8E3" />
+
+                    <TextView
+                        android:id="@+id/textCardAllApps"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginStart="14dp"
+                        android:layout_toEndOf="@+id/iconCardAllApps"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/all_apps"
+                        android:textColor="@color/text_primary"
+                        android:textSize="19sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:contentDescription="Open App Drawer"
+                        android:src="@drawable/ic_chevron_right"
+                        app:tint="#5A6C88" />
+                </RelativeLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

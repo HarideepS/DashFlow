@@ -1,0 +1,21 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <!-- Apple CarPlay Official Squircle Background -->
+    <path
+        android:fillColor="#30D158"
+        android:pathData="M14,4H34C39.5,4 44,8.5 44,14V34C44,39.5 39.5,44 34,44H14C8.5,44 4,39.5 4,34V14C4,8.5 8.5,4 14,4Z" />
+    <!-- White Circular Outline (Letter 'C' shape with round caps) -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3.4"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M31.2,16.5C29.1,14.3 26.1,13 22.8,13C16.7,13 11.8,17.9 11.8,24C11.8,30.1 16.7,35 22.8,35C26.1,35 29.1,33.7 31.2,31.5" />
+    <!-- Center Play Button Triangle -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M22,18.5V29.5L30.5,24Z" />
+</vector>

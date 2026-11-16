@@ -1,0 +1,24 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <!-- Outer White Border & Blue Android Auto Badge from Official Reference -->
+    <path
+        android:fillColor="#008DF6"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineJoin="round"
+        android:pathData="M24,5C22.4,5 20.9,5.8 20,7.2L6.8,29.8C5.8,31.4 5.8,33.4 6.7,35C7.6,36.5 9.2,37.5 11,37.5L37,37.5C38.8,37.5 40.4,36.5 41.3,35C42.2,33.4 42.2,31.4 41.2,29.8L28,7.2C27.1,5.8 25.6,5 24,5Z" />
+    <!-- Two-tone 3D Shade on Right Half -->
+    <path
+        android:fillColor="#0072C6"
+        android:pathData="M24,5.2L24,37.5L37,37.5C38.8,37.5 40.4,36.5 41.3,35C42.2,33.4 42.2,31.4 41.2,29.8L28,7.2C27.1,5.8 25.6,5 24,5.2Z" />
+    <!-- Center Navigation Chevron / Arrow -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M24,14L15.5,30L24,26.8L32.5,30Z" />
+    <path
+        android:fillColor="#DFE4EA"
+        android:pathData="M24,14L24,26.8L32.5,30Z" />
+</vector>
