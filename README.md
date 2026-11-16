@@ -8,7 +8,7 @@
 [![Customization](https://img.shields.io/badge/Cockpit-Fully%20Customizable-00E5FF?style=for-the-badge)](#)
 [![Language](https://img.shields.io/badge/Language-Kotlin%20%2F%20XML-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)](#)
 
-**DashFlow** is a lightweight, high-performance, OEM-styled Android Car Launcher designed specifically for low-resource Android head units (such as the 1GB RAM Topway TS7 running Android 8.1) as well as modern Samsung Galaxy devices (M30) repurposed as car displays — **fully normalized so any driver can customize it for their own car!**
+**DashFlow** is a lightweight, high-performance, OEM-styled Android Car Launcher designed specifically for low-resource Android head units (including 1GB RAM units running Android 8.1+) as well as your tablet/phone repurposed as a car display — **fully normalized so any driver can customize it for their own car!**
 
 </div>
 
@@ -20,7 +20,7 @@ This entire project was **vibecoded end-to-end using Google Antigravity**, trans
 
 - **Constraint-First Engineering**: Designed and tuned to triumph over aggressive Low Memory Killer (LMK) limits on entry-level Android 8.1 head units with only 1GB RAM.
 - **Pure Native Performance**: Zero webview bloat, zero heavy Compose overhead—pure native Android Kotlin, `ConstraintLayout`, and vector graphics maintaining an astonishingly low ~15–20MB resident memory footprint.
-- **Universal Vehicle Customizer**: Originally created with a Swift cockpit theme, normalized via prompt-driven architecture into a universal car launcher supporting custom vehicle names, license plates, multi-silhouette presets, and custom gallery photos.
+- **Universal Vehicle Customizer**: Normalized via prompt-driven architecture into a universal car launcher supporting custom vehicle names, license plates, multi-silhouette presets, and custom gallery photos.
 
 ---
 
@@ -44,11 +44,11 @@ Tap the car image or the vehicle badge at any time (or long-press the **Settings
 * Prevents Android 8.1's Low Memory Killer (LMK) from killing the launcher when Open Headunit or ZLink streams high-bitrate video.
 
 ### 3. 🎯 Direct Driving Cards
-1. **Android Auto (Blue)**: Default maps to `io.github.slashmax.openheadunit` (Wi-Fi Direct launch for Pixel 6a).
+1. **Android Auto (Blue)**: Default maps to `io.github.slashmax.openheadunit` (Wi-Fi Direct launch for your tablet/phone).
 2. **Apple CarPlay (Green)**: Default maps to `com.zjinnova.zlink` (ZLink wireless/wired CarPlay).
 3. **YouTube (Red)**: Maps to YouTube / ReVanced / NewPipe.
 4. **Settings & All Apps (Frosted Glass)**: Direct access to system settings and full app drawer with real-time search.
-* **Smart App Re-Binding**: Long-press any card to re-bind it to any installed application on your unit (ideal if your TS7 uses custom package names like `cn.manstep.phonemirrorbox` or `com.syu.zlink`).
+* **Smart App Re-Binding**: Long-press any card to re-bind it to any installed application on your unit (ideal if your head unit uses custom package names like `cn.manstep.phonemirrorbox` or `com.syu.zlink`).
 
 ### 4. 🎛️ Quick Controls Bar
 * **Wi-Fi**: Instant toggle or long-press for Wi-Fi settings.
@@ -64,7 +64,9 @@ Tap the car image or the vehicle badge at any time (or long-press the **Settings
 
 ## 🛠️ How to Build & Install
 
-### Option A: Open with Android Studio
+### 🔨 Build
+
+#### Open with Android Studio
 1. Open Android Studio.
 2. Select **Open** and choose this project folder.
 3. Let Gradle sync and click **Build -> Build Bundle(s) / APK(s) -> Build APK(s)**.
@@ -73,22 +75,34 @@ Tap the car image or the vehicle badge at any time (or long-press the **Settings
    app/build/outputs/apk/debug/app-debug.apk
    ```
 
-### Option B: Sideloading onto Samsung M30 or TS7 Head Unit
-1. **Via ADB (USB or Wi-Fi)**:
-   ```bash
-   adb install -r app-debug.apk
-   ```
-2. **Via USB Flash Drive (TS7 Head Unit)**:
-   * Copy `app-debug.apk` onto a standard FAT32 USB flash drive.
-   * Plug it into one of the TS7's rear USB ports.
-   * Open the built-in **"File Manager"** or **"ApkInstaller"** on the TS7.
-   * Tap the APK and select **Install**.
+---
+
+### 📲 Install
+
+Sideload `app-debug.apk` onto your Android head unit or your tablet/phone using any of the following methods:
+
+#### Option A: Via LocalSend (Wireless File Transfer — Recommended)
+1. Install **[LocalSend](https://localsend.org/)** on both your phone/PC and your Android head unit (or your tablet/phone).
+2. Ensure both devices are connected to the same Wi-Fi network or mobile hotspot.
+3. Open LocalSend on your phone/PC, select `app-debug.apk`, and send it to your head unit.
+4. Accept the incoming transfer on your head unit, tap the received APK, and select **Install**.
+
+#### Option B: Via USB Flash Drive
+1. Copy `app-debug.apk` onto a standard FAT32 USB flash drive.
+2. Plug it into one of your head unit's USB ports.
+3. Open the built-in **"File Manager"** or **"ApkInstaller"** on your head unit.
+4. Tap the APK and select **Install**.
+
+#### Option C: Via ADB (USB or Wi-Fi)
+```bash
+adb install -r app-debug.apk
+```
 
 ---
 
 ## ⚙️ Setting as Default Home Screen
 
-1. On your M30 or TS7, open **Settings**.
+1. On your head unit or tablet/phone, open **Settings**.
 2. Go to **Apps & notifications** -> **Default apps** -> **Home app**.
-3. Select **Swift Car Launcher**.
+3. Select **DashFlow**.
 4. Press the Home button on your head unit / navigation bar; it will now permanently open your custom OEM cockpit!
