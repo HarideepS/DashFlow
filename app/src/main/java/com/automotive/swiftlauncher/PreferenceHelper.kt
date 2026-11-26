@@ -6,6 +6,12 @@ import android.content.res.Configuration
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
+data class TileConfig(
+    val packageName: String,
+    val label: String,
+    val iconMode: String
+)
+
 class PreferenceHelper(context: Context) {
     private val prefs: SharedPreferences =
         context.getSharedPreferences("swift_launcher_prefs", Context.MODE_PRIVATE)
@@ -61,6 +67,17 @@ class PreferenceHelper(context: Context) {
         const val PRESET_SPORTS = "sports"
         const val PRESET_EV = "ev"
         const val PRESET_CUSTOM = "custom"
+
+        const val ICON_MODE_APP = "app"
+        const val ICON_MODE_AA = "aa"
+        const val ICON_MODE_CARPLAY = "carplay"
+        const val ICON_MODE_YOUTUBE = "youtube"
+
+        fun defaultTileConfig(slot: Int): TileConfig = when (slot) {
+            1 -> TileConfig(DEFAULT_AA_PKG, "Android Auto", ICON_MODE_AA)
+            2 -> TileConfig(DEFAULT_CARPLAY_PKG, "Apple CarPlay", ICON_MODE_CARPLAY)
+            else -> TileConfig(DEFAULT_YOUTUBE_PKG, "YouTube", ICON_MODE_YOUTUBE)
+        }
 
         fun wrapWithCustomDpi(base: Context): Context {
             return try {
@@ -201,4 +218,36 @@ class PreferenceHelper(context: Context) {
     var uiScale: Float
         get() = prefs.getFloat(KEY_UI_SCALE, 1.0f)
         set(value) = prefs.edit().putFloat(KEY_UI_SCALE, value).apply()
+
+    private fun tilePkgKey(slot: Int): String = when (slot) {
+        1 -> KEY_AA_PKG
+        2 -> KEY_CARPLAY_PKG
+        else -> KEY_YOUTUBE_PKG
+    }
+
+    private fun tileLabelKey(slot: Int): String = "pref_tile_${slot}_label"
+
+    private fun tileIconKey(slot: Int): String = "pref_tile_${slot}_icon"
+
+    fun getTileConfig(slot: Int): TileConfig {
+        val def = defaultTileConfig(slot)
+        val pkg = prefs.getString(tilePkgKey(slot), def.packageName) ?: def.packageName
+        val label = prefs.getString(tileLabelKey(slot), def.label) ?: def.label
+        val icon = prefs.getString(tileIconKey(slot), def.iconMode) ?: def.iconMode
+        return TileConfig(pkg, label, icon)
+    }
+
+    fun saveTileConfig(slot: Int, config: TileConfig) {
+        prefs.edit()
+            .putString(tilePkgKey(slot), config.packageName)
+            .putString(tileLabelKey(slot), config.label)
+            .putString(tileIconKey(slot), config.iconMode)
+            .apply()
+    }
+
+    fun resetTileConfig(slot: Int): TileConfig {
+        val def = defaultTileConfig(slot)
+        saveTileConfig(slot, def)
+        return def
+    }
 }

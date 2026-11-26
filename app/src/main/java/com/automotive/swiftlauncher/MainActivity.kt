@@ -55,36 +55,45 @@ class MainActivity : AppCompatActivity() {
     private lateinit var speedometerHelper: SpeedometerHelper
 
     private var targetRebindKey: String? = null
+    private var targetTileSlot: Int? = null
+    private var reopenTileCustomizerAfterPick: Boolean = false
     private var lastNonZeroVolume: Int = 8
     private var lastKnownSpeedKmh: Int = -1
     private var pendingDialogDismiss: (() -> Unit)? = null
 
-    // Activity Result Launcher for re-binding cards or picking boot auto-launch app
+    // Activity Result Launcher for re-binding tiles or picking boot auto-launch app
     private val appPickerLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK && result.data != null) {
             val selectedPkg = result.data?.getStringExtra(AppDrawerActivity.EXTRA_SELECTED_PACKAGE)
             val selectedLabel = result.data?.getStringExtra(AppDrawerActivity.EXTRA_SELECTED_LABEL)
-            if (selectedPkg != null && targetRebindKey != null) {
-                when (targetRebindKey) {
-                    PreferenceHelper.KEY_AA_PKG -> {
-                        prefs.androidAutoPackage = selectedPkg
-                        Toast.makeText(this, "Android Auto mapped to: $selectedLabel", Toast.LENGTH_SHORT).show()
+            if (selectedPkg != null) {
+                val slot = targetTileSlot
+                if (slot != null) {
+                    val resolvedLabel = selectedLabel ?: selectedPkg
+                    targetTileSlot = null
+                    if (reopenTileCustomizerAfterPick) {
+                        reopenTileCustomizerAfterPick = false
+                        showTileCustomizerDialog(
+                            slot = slot,
+                            overridePkg = selectedPkg,
+                            overrideLabel = resolvedLabel,
+                            overrideIconMode = PreferenceHelper.ICON_MODE_APP
+                        )
+                    } else {
+                        prefs.saveTileConfig(
+                            slot,
+                            TileConfig(selectedPkg, resolvedLabel, PreferenceHelper.ICON_MODE_APP)
+                        )
+                        renderCustomTiles()
+                        Toast.makeText(this, "Tile mapped to: $resolvedLabel", Toast.LENGTH_SHORT).show()
                     }
-                    PreferenceHelper.KEY_CARPLAY_PKG -> {
-                        prefs.carPlayPackage = selectedPkg
-                        Toast.makeText(this, "CarPlay mapped to: $selectedLabel", Toast.LENGTH_SHORT).show()
-                    }
-                    PreferenceHelper.KEY_YOUTUBE_PKG -> {
-                        prefs.youtubePackage = selectedPkg
-                        Toast.makeText(this, "YouTube mapped to: $selectedLabel", Toast.LENGTH_SHORT).show()
-                    }
-                    PreferenceHelper.KEY_BOOT_LAUNCH_PKG -> {
-                        prefs.bootLaunchPackage = selectedPkg
-                        prefs.bootLaunchLabel = selectedLabel ?: selectedPkg
-                        Toast.makeText(this, "Boot auto-launch set to: $selectedLabel", Toast.LENGTH_SHORT).show()
-                    }
+                } else if (targetRebindKey == PreferenceHelper.KEY_BOOT_LAUNCH_PKG) {
+                    targetRebindKey = null
+                    prefs.bootLaunchPackage = selectedPkg
+                    prefs.bootLaunchLabel = selectedLabel ?: selectedPkg
+                    Toast.makeText(this, "Boot auto-launch set to: $selectedLabel", Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -165,6 +174,7 @@ class MainActivity : AppCompatActivity() {
         updateDateText()
         applyVehicleCustomizations()
         applyTelemetrySettings()
+        renderCustomTiles()
 
         if (prefs.autoNightDimming) {
             brightnessHelper.applySunBasedDimming(weatherService.isNightTimeNow())
@@ -733,46 +743,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupCards() {
-        // 1. Android Auto (Square Card with Official AA Icon)
-        binding.cardAndroidAuto.setOnClickListener {
-            launchPackageOrPrompt(
-                prefs.androidAutoPackage,
-                "Open Headunit not installed.\nLong-press to assign another app.",
-                PreferenceHelper.KEY_AA_PKG
-            )
-        }
-        binding.cardAndroidAuto.setOnLongClickListener {
-            openAppPicker(PreferenceHelper.KEY_AA_PKG)
-            true
-        }
+        val tileSlots = listOf(
+            Triple(1, binding.cardAndroidAuto, binding.iconCardAA to binding.textCardAA),
+            Triple(2, binding.cardCarPlay, binding.iconCardCarPlay to binding.textCardCarPlay),
+            Triple(3, binding.cardYouTube, binding.iconCardYouTube to binding.textCardYouTube)
+        )
 
-        // 2. Apple CarPlay (Square Card with Official CarPlay Icon)
-        binding.cardCarPlay.setOnClickListener {
-            launchPackageOrPrompt(
-                prefs.carPlayPackage,
-                "ZLink not installed.\nLong-press to assign another app.",
-                PreferenceHelper.KEY_CARPLAY_PKG
-            )
+        tileSlots.forEach { (slot, cardView, _) ->
+            cardView.setOnClickListener {
+                val config = prefs.getTileConfig(slot)
+                launchTileOrPrompt(slot, config)
+            }
+            cardView.setOnLongClickListener {
+                showTileCustomizerDialog(slot)
+                true
+            }
         }
-        binding.cardCarPlay.setOnLongClickListener {
-            openAppPicker(PreferenceHelper.KEY_CARPLAY_PKG)
-            true
-        }
+        renderCustomTiles()
 
-        // 3. YouTube (Square Card with Official YouTube Icon)
-        binding.cardYouTube.setOnClickListener {
-            launchPackageOrPrompt(
-                prefs.youtubePackage,
-                "YouTube not installed.\nLong-press to assign another app.",
-                PreferenceHelper.KEY_YOUTUBE_PKG
-            )
-        }
-        binding.cardYouTube.setOnLongClickListener {
-            openAppPicker(PreferenceHelper.KEY_YOUTUBE_PKG)
-            true
-        }
-
-        // 4. Settings (Rectangle Tile) - tap opens system settings, long-press opens vehicle customizer!
+        // Universal Rectangle Tiles: System Settings (long-press opens Dashboard Customizer) & All Apps
         binding.cardSettings.setOnClickListener {
             startActivity(Intent(Settings.ACTION_SETTINGS))
         }
@@ -781,11 +770,161 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-        // 5. All Apps (Rectangle Tile)
         binding.cardAllApps.setOnClickListener {
             val intent = Intent(this, AppDrawerActivity::class.java)
             startActivity(intent)
         }
+    }
+
+    private fun renderCustomTiles() {
+        val tileViews = listOf(
+            Triple(1, binding.iconCardAA, binding.textCardAA),
+            Triple(2, binding.iconCardCarPlay, binding.textCardCarPlay),
+            Triple(3, binding.iconCardYouTube, binding.textCardYouTube)
+        )
+        tileViews.forEach { (slot, iconView, textView) ->
+            val config = prefs.getTileConfig(slot)
+            textView.text = config.label
+            iconView.clearColorFilter()
+            iconView.imageTintList = null
+
+            when (config.iconMode) {
+                PreferenceHelper.ICON_MODE_AA -> {
+                    iconView.setImageResource(R.drawable.ic_aa_custom)
+                }
+                PreferenceHelper.ICON_MODE_CARPLAY -> {
+                    iconView.setImageResource(R.drawable.ic_carplay_custom)
+                }
+                PreferenceHelper.ICON_MODE_YOUTUBE -> {
+                    iconView.setImageResource(R.drawable.ic_youtube)
+                    iconView.setColorFilter(Color.parseColor("#FF0000"))
+                }
+                else -> {
+                    try {
+                        val appIcon = packageManager.getApplicationIcon(config.packageName)
+                        iconView.setImageDrawable(appIcon)
+                    } catch (_: Exception) {
+                        iconView.setImageResource(R.drawable.ic_apps)
+                        iconView.setColorFilter(Color.parseColor("#9DA8B9"))
+                    }
+                }
+            }
+        }
+    }
+
+    private fun showTileCustomizerDialog(
+        slot: Int,
+        overridePkg: String? = null,
+        overrideLabel: String? = null,
+        overrideIconMode: String? = null
+    ) {
+        val current = prefs.getTileConfig(slot)
+        var selectedPkg = overridePkg ?: current.packageName
+        var selectedIconMode = overrideIconMode ?: current.iconMode
+
+        val dialogView = layoutInflater.inflate(R.layout.dialog_customize_tile, null)
+        val textTitle = dialogView.findViewById<TextView>(R.id.textTileDialogTitle)
+        val textBoundAppInfo = dialogView.findViewById<TextView>(R.id.textBoundAppInfo)
+        val editTileLabel = dialogView.findViewById<EditText>(R.id.editTileLabel)
+        val btnChangeTileApp = dialogView.findViewById<Button>(R.id.btnChangeTileApp)
+        val btnResetTile = dialogView.findViewById<Button>(R.id.btnResetTile)
+        val btnCancelTile = dialogView.findViewById<Button>(R.id.btnCancelTile)
+        val btnSaveTile = dialogView.findViewById<Button>(R.id.btnSaveTile)
+
+        val sectionHeaders = listOf(
+            R.id.tileSectionApp,
+            R.id.tileSectionLabel,
+            R.id.tileSectionIcon
+        ).map { dialogView.findViewById<TextView>(it) }
+
+        val iconButtons = mapOf(
+            PreferenceHelper.ICON_MODE_APP to dialogView.findViewById<Button>(R.id.btnIconModeApp),
+            PreferenceHelper.ICON_MODE_AA to dialogView.findViewById<Button>(R.id.btnIconModeAA),
+            PreferenceHelper.ICON_MODE_CARPLAY to dialogView.findViewById<Button>(R.id.btnIconModeCarPlay),
+            PreferenceHelper.ICON_MODE_YOUTUBE to dialogView.findViewById<Button>(R.id.btnIconModeYouTube)
+        )
+
+        textTitle.text = "Customize Tile #$slot"
+        editTileLabel.setText(overrideLabel ?: current.label)
+
+        fun resolveAppDisplayName(pkg: String): String {
+            return try {
+                val appInfo = packageManager.getApplicationInfo(pkg, 0)
+                packageManager.getApplicationLabel(appInfo).toString()
+            } catch (_: Exception) {
+                "Not installed"
+            }
+        }
+        textBoundAppInfo.text = "${resolveAppDisplayName(selectedPkg)} ($selectedPkg)"
+
+        val accentColor = parseAccentColor()
+        val accentStateList = ColorStateList.valueOf(accentColor)
+        val subtleFill = ColorStateList.valueOf(
+            Color.argb(36, Color.red(accentColor), Color.green(accentColor), Color.blue(accentColor))
+        )
+        val defaultStroke = ColorStateList.valueOf(Color.parseColor("#2F3A50"))
+        val transparentFill = ColorStateList.valueOf(Color.TRANSPARENT)
+
+        sectionHeaders.forEach { it.setTextColor(accentColor) }
+        btnSaveTile.backgroundTintList = accentStateList
+        (btnChangeTileApp as? MaterialButton)?.apply {
+            setTextColor(accentColor)
+            strokeColor = accentStateList
+        }
+
+        fun updateIconModeUI() {
+            iconButtons.forEach { (mode, btn) ->
+                val active = mode == selectedIconMode
+                (btn as? MaterialButton)?.apply {
+                    strokeColor = if (active) accentStateList else defaultStroke
+                    backgroundTintList = if (active) subtleFill else transparentFill
+                }
+            }
+        }
+        updateIconModeUI()
+
+        iconButtons.forEach { (mode, btn) ->
+            btn.setOnClickListener {
+                selectedIconMode = mode
+                updateIconModeUI()
+            }
+        }
+
+        val dialog = AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_NoActionBar)
+            .setView(dialogView)
+            .create()
+
+        btnChangeTileApp.setOnClickListener {
+            dialog.dismiss()
+            openTileAppPicker(slot, reopenCustomizer = true)
+        }
+
+        btnResetTile.setOnClickListener {
+            val def = prefs.resetTileConfig(slot)
+            renderCustomTiles()
+            dialog.dismiss()
+            Toast.makeText(this, "Tile #$slot reset to ${def.label}", Toast.LENGTH_SHORT).show()
+        }
+
+        btnCancelTile.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        btnSaveTile.setOnClickListener {
+            val newLabel = editTileLabel.text.toString().trim().ifEmpty {
+                PreferenceHelper.defaultTileConfig(slot).label
+            }
+            prefs.saveTileConfig(slot, TileConfig(selectedPkg, newLabel, selectedIconMode))
+            renderCustomTiles()
+            dialog.dismiss()
+            Toast.makeText(this, "Tile updated: $newLabel", Toast.LENGTH_SHORT).show()
+        }
+
+        dialog.show()
+        val maxDialogWidth = (resources.displayMetrics.density * 560).toInt()
+        val targetWidth = minOf((resources.displayMetrics.widthPixels * 0.80f).toInt(), maxDialogWidth)
+        val maxHeight = (resources.displayMetrics.heightPixels * 0.90f).toInt()
+        dialog.window?.setLayout(targetWidth, maxHeight)
     }
 
     private fun setupToggles() {
@@ -974,18 +1113,34 @@ class MainActivity : AppCompatActivity() {
         binding.iconWeather.setImageResource(iconRes)
     }
 
-    private fun launchPackageOrPrompt(packageName: String, notFoundMessage: String, rebindKey: String) {
-        val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
+    private fun launchTileOrPrompt(slot: Int, config: TileConfig) {
+        val launchIntent = packageManager.getLaunchIntentForPackage(config.packageName)
         if (launchIntent != null) {
             launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(launchIntent)
         } else {
-            Toast.makeText(this, notFoundMessage, Toast.LENGTH_LONG).show()
-            openAppPicker(rebindKey)
+            Toast.makeText(
+                this,
+                "${config.label} not installed — choose an app for this tile.",
+                Toast.LENGTH_LONG
+            ).show()
+            openTileAppPicker(slot, reopenCustomizer = false)
         }
     }
 
+    private fun openTileAppPicker(slot: Int, reopenCustomizer: Boolean) {
+        targetRebindKey = null
+        targetTileSlot = slot
+        reopenTileCustomizerAfterPick = reopenCustomizer
+        val intent = Intent(this, AppDrawerActivity::class.java).apply {
+            action = AppDrawerActivity.ACTION_PICK_APP
+        }
+        appPickerLauncher.launch(intent)
+    }
+
     private fun openAppPicker(rebindKey: String) {
+        targetTileSlot = null
+        reopenTileCustomizerAfterPick = false
         targetRebindKey = rebindKey
         val intent = Intent(this, AppDrawerActivity::class.java).apply {
             action = AppDrawerActivity.ACTION_PICK_APP

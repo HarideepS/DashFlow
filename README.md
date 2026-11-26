@@ -86,12 +86,10 @@ Tap the car image or the vehicle badge at any time (or long-press the **Settings
 * **Live Weather Pill**: Resolves any configured city name automatically via Open-Meteo's free Geocoding + Forecast APIs (no API key required), caches the last reading in `SharedPreferences`, and falls back silently when driving offline.
 * **Zero-Sensor Auto-Dimming**: Optional sunrise/sunset brightness adjustment using cached solar timestamps from Open-Meteo, ideal for budget head units that lack an ambient light sensor.
 
-### 5. 🎯 Direct Driving Cards & Cold-Boot Recovery
-1. **Android Auto**: Default maps to `io.github.slashmax.openheadunit` (Wi-Fi Direct launch for your tablet/phone).
-2. **Apple CarPlay**: Default maps to `com.zjinnova.zlink` (ZLink wireless/wired CarPlay).
-3. **YouTube**: Maps to YouTube / ReVanced / NewPipe.
-4. **Settings & All Apps**: Direct access to system settings and an instant-search app drawer.
-* **Smart App Re-Binding**: Long-press any driving card to assign it to any installed app on your unit (ideal if your head unit uses custom package names like `cn.manstep.phonemirrorbox` or `com.syu.zlink`).
+### 5. 🎯 Customizable Driving Tiles & Universal Controls
+1. **3 Customizable Square Driving Tiles** *(Defaults: Android Auto, Apple CarPlay, YouTube)*:
+   * **Long-press any square tile** to customize its **assigned app**, **display name** (e.g., *Maps*, *Spotify*, *Waze*, *CarPlay*), and **icon style** (automatically uses the installed app's real icon or optional AA / CarPlay / YouTube presets).
+2. **Universal Fixed Controls**: **Settings**, **All Apps**, **Clock & Day**, **Weather**, and the **4-button Quick Controls Dock** (`Wi-Fi`, `Bluetooth`, `Brightness`, `Volume`) remain consistent across every setup.
 * **Persistent Floating Mute Pill**: Once enabled with overlay permission granted, a small draggable Mute/Unmute pill stays visible over Android Auto, CarPlay, and YouTube so you can silence audio anytime without leaving navigation.
 * **Cold-Boot Auto-Launch**: Optional `BOOT_COMPLETED` / `QUICKBOOT_POWERON` receiver lets you automatically launch your preferred CarPlay/AA or navigation app right after ignition.
 
