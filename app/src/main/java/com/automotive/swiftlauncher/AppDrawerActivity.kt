@@ -1,5 +1,6 @@
 package com.automotive.swiftlauncher
 
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -26,6 +27,10 @@ class AppDrawerActivity : AppCompatActivity() {
         const val ACTION_PICK_APP = "com.automotive.swiftlauncher.PICK_APP"
         const val EXTRA_SELECTED_PACKAGE = "extra_selected_package"
         const val EXTRA_SELECTED_LABEL = "extra_selected_label"
+    }
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(PreferenceHelper.wrapWithCustomDpi(newBase))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

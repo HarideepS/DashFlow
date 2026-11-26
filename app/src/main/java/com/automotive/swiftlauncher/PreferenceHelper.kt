@@ -2,6 +2,9 @@ package com.automotive.swiftlauncher
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Configuration
+import kotlin.math.abs
+import kotlin.math.roundToInt
 
 class PreferenceHelper(context: Context) {
     private val prefs: SharedPreferences =
@@ -27,6 +30,7 @@ class PreferenceHelper(context: Context) {
         const val KEY_CAR_PRESET = "pref_car_preset"
         const val KEY_CUSTOM_CAR_PATH = "pref_custom_car_path"
         const val KEY_CAR_SCALE = "pref_car_scale"
+        const val KEY_UI_SCALE = "pref_ui_scale"
         const val KEY_ACCENT_COLOR = "pref_accent_color"
 
         // Head-Unit Telemetry & Utility Keys
@@ -57,6 +61,29 @@ class PreferenceHelper(context: Context) {
         const val PRESET_SPORTS = "sports"
         const val PRESET_EV = "ev"
         const val PRESET_CUSTOM = "custom"
+
+        fun wrapWithCustomDpi(base: Context): Context {
+            return try {
+                val scale = PreferenceHelper(base).uiScale.coerceIn(0.70f, 1.30f)
+                if (abs(scale - 1.0f) < 0.01f) {
+                    return base
+                }
+                val config = Configuration(base.resources.configuration)
+                val baseDpi = if (config.densityDpi > 0) {
+                    config.densityDpi
+                } else {
+                    base.resources.displayMetrics.densityDpi
+                }
+                if (baseDpi > 0) {
+                    config.densityDpi = (baseDpi * scale).roundToInt().coerceIn(120, 640)
+                    base.createConfigurationContext(config)
+                } else {
+                    base
+                }
+            } catch (_: Exception) {
+                base
+            }
+        }
     }
 
     var androidAutoPackage: String
@@ -170,4 +197,8 @@ class PreferenceHelper(context: Context) {
     var lastMediaVolume: Int
         get() = prefs.getInt(KEY_LAST_MEDIA_VOLUME, 8)
         set(value) = prefs.edit().putInt(KEY_LAST_MEDIA_VOLUME, value).apply()
+
+    var uiScale: Float
+        get() = prefs.getFloat(KEY_UI_SCALE, 1.0f)
+        set(value) = prefs.edit().putFloat(KEY_UI_SCALE, value).apply()
 }

@@ -163,7 +163,8 @@ class FloatingMuteService : Service() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun createOverlayPill() {
-        val density = resources.displayMetrics.density
+        val uiScale = prefs.uiScale.coerceIn(0.70f, 1.30f)
+        val density = resources.displayMetrics.density * uiScale
         val sizePx = (48 * density).roundToInt()
         val iconSizePx = (24 * density).roundToInt()
         val marginPx = (16 * density).roundToInt()

@@ -276,22 +276,70 @@
             android:textColor="@color/text_secondary"
             android:textSize="12sp" />
 
-        <!-- 3. CAR DISPLAY SIZING -->
+        <!-- 3. DISPLAY & DPI SCALING -->
         <TextView
             android:id="@+id/sectionHeader3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:fontFamily="sans-serif-medium"
-            android:text="3. Car Scale / Display Sizing"
+            android:text="3. Display &amp; DPI Scaling"
             android:textColor="#3B82F6"
             android:textSize="14sp"
             android:textStyle="bold" />
 
+        <!-- Whole-Launcher UI DPI Scale -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textUiScaleValue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Whole-Launcher DPI Scale: 100% (Native)"
+                android:textColor="@color/text_primary"
+                android:textSize="13sp" />
+
+            <Button
+                android:id="@+id/btnResetUiScale"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="34dp"
+                android:minWidth="0dp"
+                android:paddingStart="10dp"
+                android:paddingTop="0dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="0dp"
+                android:text="Reset 100%"
+                android:textColor="#60A5FA"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <SeekBar
+            android:id="@+id/seekUiScale"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:max="12"
+            android:progress="6" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Car Visual Size"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:orientation="horizontal">
 
             <Button

@@ -26,6 +26,7 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -40,6 +41,7 @@ import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity() {
@@ -116,6 +118,10 @@ class MainActivity : AppCompatActivity() {
                 "android.media.VOLUME_CHANGED_ACTION" -> updateVolumeState()
             }
         }
+    }
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(PreferenceHelper.wrapWithCustomDpi(newBase))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -449,12 +455,42 @@ class MainActivity : AppCompatActivity() {
         val checkSpeedMph = dialogView.findViewById<CheckBox>(R.id.checkSpeedMph)
         val checkAutoDimming = dialogView.findViewById<CheckBox>(R.id.checkAutoDimming)
         val checkFloatingMute = dialogView.findViewById<CheckBox>(R.id.checkFloatingMute)
+        val seekUiScale = dialogView.findViewById<SeekBar>(R.id.seekUiScale)
+        val textUiScaleValue = dialogView.findViewById<TextView>(R.id.textUiScaleValue)
+        val btnResetUiScale = dialogView.findViewById<Button>(R.id.btnResetUiScale)
         val btnEnableMediaAccess = dialogView.findViewById<Button>(R.id.btnEnableMediaAccess)
         val textBootLaunchApp = dialogView.findViewById<TextView>(R.id.textBootLaunchApp)
 
         var selectedPreset = prefs.carPreset
         var selectedScale = prefs.carScale
+        var selectedUiScale = prefs.uiScale.coerceIn(0.70f, 1.30f)
         var selectedAccent = prefs.accentColor
+
+        fun updateUiScaleLabel() {
+            val pct = (selectedUiScale * 100f).roundToInt()
+            textUiScaleValue.text = if (abs(selectedUiScale - 1.0f) < 0.01f) {
+                "Whole-Launcher DPI Scale: $pct% (Native)"
+            } else {
+                "Whole-Launcher DPI Scale: $pct%"
+            }
+        }
+        seekUiScale.progress = ((selectedUiScale - 0.70f) / 0.05f).roundToInt().coerceIn(0, 12)
+        updateUiScaleLabel()
+
+        seekUiScale.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                selectedUiScale = 0.70f + (progress * 0.05f)
+                updateUiScaleLabel()
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+
+        btnResetUiScale.setOnClickListener {
+            selectedUiScale = 1.0f
+            seekUiScale.progress = 6
+            updateUiScaleLabel()
+        }
 
         editVehicleName.setText(prefs.vehicleName)
         editLicensePlate.setText(prefs.licensePlate)
@@ -515,6 +551,9 @@ class MainActivity : AppCompatActivity() {
             checkSpeedMph.buttonTintList = accentStateList
             checkAutoDimming.buttonTintList = accentStateList
             checkFloatingMute.buttonTintList = accentStateList
+            seekUiScale.progressTintList = accentStateList
+            seekUiScale.thumbTintList = accentStateList
+            btnResetUiScale.setTextColor(accentColor)
             btnSaveSettings.backgroundTintList = accentStateList
             (btnPickCustomImage as? MaterialButton)?.apply {
                 setTextColor(accentColor)
@@ -639,10 +678,12 @@ class MainActivity : AppCompatActivity() {
             val newPlate = editLicensePlate.text.toString().trim()
             val newCity = editCity.text.toString().trim()
 
+            val uiScaleChanged = abs(prefs.uiScale - selectedUiScale) >= 0.01f
             prefs.vehicleName = if (newName.isNotBlank()) newName else PreferenceHelper.DEFAULT_VEHICLE_NAME
             prefs.licensePlate = newPlate
             prefs.carPreset = selectedPreset
             prefs.carScale = selectedScale
+            prefs.uiScale = selectedUiScale
             prefs.accentColor = selectedAccent
             prefs.showSpeedometer = checkShowSpeedometer.isChecked
             prefs.speedUnitMph = checkSpeedMph.isChecked
@@ -676,7 +717,12 @@ class MainActivity : AppCompatActivity() {
             applyVehicleCustomizations()
             applyTelemetrySettings()
             dialog.dismiss()
-            Toast.makeText(this, "Vehicle settings applied!", Toast.LENGTH_SHORT).show()
+            if (uiScaleChanged) {
+                Toast.makeText(this, "Applying ${(selectedUiScale * 100).roundToInt()}% DPI scale...", Toast.LENGTH_SHORT).show()
+                recreate()
+            } else {
+                Toast.makeText(this, "Vehicle settings applied!", Toast.LENGTH_SHORT).show()
+            }
         }
 
         dialog.show()
