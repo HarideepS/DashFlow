@@ -1,12 +1,12 @@
-# DashFlow — Universal OEM Car Launcher (Android 8.1+ & 1GB RAM Optimized)
+# DashFlow — Lightweight OEM Car Launcher (Android 8.0+ & 1GB–2GB RAM Optimized)
 
 <div align="center">
 
-[![Vibecoded with Google Antigravity](https://img.shields.io/badge/Vibecoded%20with-Google%20Antigravity-4285F4?style=for-the-badge&logo=google&logoColor=white)](https://antigravity.google)
-[![Platform](https://img.shields.io/badge/Platform-Android%208.1%2B-3DDC84?style=for-the-badge&logo=android&logoColor=white)](#)
-[![RAM Footprint](https://img.shields.io/badge/Resident%20RAM-~15--20MB-FF6F00?style=for-the-badge)](#)
-[![Customization](https://img.shields.io/badge/Cockpit-Fully%20Customizable-00E5FF?style=for-the-badge)](#)
-[![Language](https://img.shields.io/badge/Language-Kotlin%20%2F%20XML-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)](#)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
+[![Android CI](https://github.com/HarideepS/DashFlow/actions/workflows/android-build.yml/badge.svg)](https://github.com/HarideepS/DashFlow/actions/workflows/android-build.yml)
+[![Platform](https://img.shields.io/badge/Platform-Android%208.0%2B-3DDC84?style=for-the-badge&logo=android&logoColor=white)](#)
+[![Architecture](https://img.shields.io/badge/UI-Pure%20XML%20%2B%20ViewBinding-FF6F00?style=for-the-badge)](#)
+[![Language](https://img.shields.io/badge/Language-Kotlin-7F52FF?style=for-the-badge&logo=kotlin&logoColor=white)](#)
 
 <br/><br/>
 
@@ -14,19 +14,22 @@
 
 <br/><br/>
 
-**DashFlow** is a lightweight, high-performance, OEM-styled Android Car Launcher designed specifically for low-resource Android head units (including 1GB RAM units running Android 8.1+) as well as your tablet/phone repurposed as a car display — **fully normalized so any driver can customize it for their own car!**
+**DashFlow** is a lightweight, zero-bloat, OEM-styled Android Car Launcher built specifically for low-resource aftermarket Android head units (1GB–2GB RAM running Android 8.0+) as well as your tablet/phone repurposed as a car display — **fully customizable for any vehicle!**
 
 </div>
 
 ---
 
-## ⚡ Vibecoded with Google Antigravity
+## 🧠 Architecture & Zero-Bloat Engineering
 
-This entire project was **vibecoded end-to-end using Google Antigravity**, translating rapid natural language prompts into a battle-tested, resource-thrifty, production-ready Android automotive cockpit:
+Most aftermarket head-unit launchers trigger Android's **Low Memory Killer (LMK)** during heavy navigation or CarPlay/Android Auto streaming because they embed WebViews, heavy animation loops, or bloated SDKs. DashFlow takes a strict constraint-first approach:
 
-- **Constraint-First Engineering**: Designed and tuned to triumph over aggressive Low Memory Killer (LMK) limits on entry-level Android 8.1 head units with only 1GB RAM.
-- **Pure Native Performance**: Zero webview bloat, zero heavy Compose overhead—pure native Android Kotlin, `ConstraintLayout`, and vector graphics maintaining an astonishingly low ~15–20MB resident memory footprint.
-- **Universal Vehicle Customizer**: Normalized via prompt-driven architecture into a universal car launcher supporting custom vehicle names, license plates, multi-silhouette presets, and custom gallery photos.
+* **Pure Native Views (`ConstraintLayout` + ViewBinding + Vector Drawables)**: No Jetpack Compose runtime, no Flutter engine, no WebViews, and zero analytics or Google Play Services SDKs.
+* **Memory-Safe Custom Media**: User-uploaded car photos are downsampled via `inJustDecodeBounds` / `inSampleSize` before decoding, keeping footprint lean even on 1GB RAM hardware.
+* **Verify Memory Footprint Yourself**: Connect your head unit or tablet/phone via ADB and inspect resident PSS memory:
+  ```bash
+  adb shell dumpsys meminfo com.automotive.swiftlauncher
+  ```
 
 ---
 
@@ -34,48 +37,46 @@ This entire project was **vibecoded end-to-end using Google Antigravity**, trans
 
 ### 1. 🚘 Universal Vehicle Dashboard Customizer
 Tap the car image or the vehicle badge at any time (or long-press the **Settings** card) to launch the in-cockpit Customizer:
-* **Custom Vehicle Model / Name**: Personalize your ride's name (e.g. *Maruti Suzuki Swift*, *Hyundai Creta*, *Honda Civic*, *BMW 3 Series*, *Tesla Model 3*).
-* **Official License Plate Tag**: Render your real registration plate (e.g. *TG08 G6391*, *KA 01 AB 1234*) in clean OEM plate typography, or leave empty to hide.
-* **Built-in Silhouette Presets**:
-  * 🚗 **Swift OEM Render**: Dual-tone Arctic White with Midnight Black floating roof.
-  * 🏎️ **Sport Sedan**: Aerodynamic executive saloon silhouette.
-  * 🚙 **Urban SUV / Crossover**: Muscular stance with roof rails.
-  * 🏁 **Sports GT**: Aggressive low-slung supercar coupe.
-  * ⚡ **Cyber EV**: Futuristic minimalist electric vehicle with neon LED lightbars.
-* **Upload Any Custom Car Photo / PNG**: Pick any photo of your actual car from your device gallery or downloads. Includes an intelligent in-memory downsampler that keeps resident RAM under 20MB even with 48MP camera photos!
-* **Car Display Scaling**: Choose between `85% Compact`, `100% Default`, and `115% Hero` scaling.
+* **Custom Vehicle Model & License Plate**: Personalize your ride's model name and optional registration plate badge directly on the dashboard.
+* **Built-in Silhouette Presets**: Switch instantly between **Swift OEM**, **Sport Sedan**, **Urban SUV**, **Sports GT**, and **Cyber EV**.
+* **Upload Any Custom Car Photo / PNG**: Pick any photo of your own car from device storage/gallery with automatic memory-safe downsampling.
+* **Accent Colors & Scaling**: Choose custom cockpit accent colors (`Blue`, `Cyan`, `Green`, `Red`, `Amber`) and vehicle scale (`85% Compact`, `100% Default`, `115% Hero`).
 
-### 2. ⚡ Ultra-Low Memory Footprint (~15–20MB Resident RAM)
-* Built using pure native Android Views (`ConstraintLayout` + XML drawables) instead of memory-heavy engines (Flutter, Compose, or KLWP).
-* Prevents Android 8.1's Low Memory Killer (LMK) from killing the launcher when Open Headunit or ZLink streams high-bitrate video.
+### 2. 🏎️ Raw GPS Speedometer (Zero Play Services)
+* Uses native Android `LocationManager` (`GPS_PROVIDER`) with zero Google Play Services dependencies so it works smoothly on de-bloated head units.
+* Displays a live digital speed pill in **KM/H** or **MPH** (tap the speed pill anytime to switch units).
 
-### 3. 🎯 Direct Driving Cards
-1. **Android Auto (Blue)**: Default maps to `io.github.slashmax.openheadunit` (Wi-Fi Direct launch for your tablet/phone).
-2. **Apple CarPlay (Green)**: Default maps to `com.zjinnova.zlink` (ZLink wireless/wired CarPlay).
-3. **YouTube (Red)**: Maps to YouTube / ReVanced / NewPipe.
-4. **Settings & All Apps (Frosted Glass)**: Direct access to system settings and full app drawer with real-time search.
-* **Smart App Re-Binding**: Long-press any card to re-bind it to any installed application on your unit (ideal if your head unit uses custom package names like `cn.manstep.phonemirrorbox` or `com.syu.zlink`).
+### 3. 🎵 Headless Media Controller (`MediaSessionManager`)
+* Reads active playback sessions from Spotify, YouTube Music, Poweramp, etc. via a lightweight `NotificationListenerService`.
+* Automatically appears above the quick controls bar only while media is active, providing blind-touch-friendly **Previous**, **Play/Pause**, and **Next** buttons plus hardware media-key support (`KEYCODE_MEDIA_*`).
 
-### 4. 🎛️ Quick Controls Bar
-* **Wi-Fi**: Instant toggle or long-press for Wi-Fi settings.
-* **Bluetooth**: Direct shortcut to Bluetooth pairing.
-* **Screen Brightness**: 4-stage brightness cycle (`100% Day` -> `50% Dusk` -> `15% Night Mode` -> `Auto`).
-* **Volume**: Single-tap mute / unmute with automatic volume memory.
+### 4. ⛅ Geocoded Weather & Sunrise/Sunset Auto-Dimming
+* **Live Weather Pill**: Resolves any configured city name automatically via Open-Meteo's free Geocoding + Forecast APIs (no API key required) with offline cache fallback.
+* **Zero-Sensor Auto-Dimming**: Optional sunrise/sunset brightness adjustment using cached solar timestamps from Open-Meteo, ideal for budget head units that lack an ambient light sensor.
 
-### 5. ⛅ Live Weather & Digital Clock
-* **Live Weather Pill**: Automatic sync via Open-Meteo API (no API key required) with offline cache fallback. City location is fully configurable in the Customizer!
-* **TextClock**: 0% CPU consumption digital clock. Tap the clock at any time to toggle between 12-hour (AM/PM) and 24-hour formats.
+### 5. 🎯 Direct Driving Cards & Cold-Boot Recovery
+1. **Android Auto**: Default maps to `io.github.slashmax.openheadunit` (Wi-Fi Direct launch for your tablet/phone).
+2. **Apple CarPlay**: Default maps to `com.zjinnova.zlink` (ZLink wireless/wired CarPlay).
+3. **YouTube**: Maps to YouTube / ReVanced / NewPipe.
+4. **Settings & All Apps**: Direct access to system settings and an instant-search app drawer.
+* **Smart App Re-Binding**: Long-press any driving card to assign it to any installed app on your unit (ideal if your head unit uses custom package names like `cn.manstep.phonemirrorbox` or `com.syu.zlink`).
+* **Cold-Boot Auto-Launch**: Optional `BOOT_COMPLETED` / `QUICKBOOT_POWERON` receiver lets you automatically launch your preferred CarPlay/AA or navigation app right after ignition.
 
 ---
 
-## 🛠️ How to Build & Install
+## 🛠️ How to Download, Build & Install
 
-### 🔨 Build
+### 📦 Pre-Built APK (Recommended for Drivers)
+Download the latest ready-to-install `.apk` directly from the **[GitHub Releases](https://github.com/HarideepS/DashFlow/releases)** page (automatically built by GitHub Actions on every release tag) — no Android Studio required!
+
+---
+
+### 🔨 Build from Source
 
 #### Open with Android Studio
 1. Open Android Studio.
 2. Select **Open** and choose this project folder.
-3. Let Gradle sync and click **Build -> Build Bundle(s) / APK(s) -> Build APK(s)**.
+3. Let Gradle sync and click **Build -> Build Bundle(s) / APK(s) -> Build APK(s)** (or run `./gradlew assembleDebug` in terminal).
 4. The generated APK will be in:
    ```
    app/build/outputs/apk/debug/app-debug.apk
@@ -85,16 +86,16 @@ Tap the car image or the vehicle badge at any time (or long-press the **Settings
 
 ### 📲 Install
 
-Sideload `app-debug.apk` onto your Android head unit or your tablet/phone using any of the following methods:
+Sideload the `.apk` onto your Android head unit or your tablet/phone using any of the following methods:
 
 #### Option A: Via LocalSend (Wireless File Transfer — Recommended)
 1. Install **[LocalSend](https://localsend.org/)** on both your phone/PC and your Android head unit (or your tablet/phone).
 2. Ensure both devices are connected to the same Wi-Fi network or mobile hotspot.
-3. Open LocalSend on your phone/PC, select `app-debug.apk`, and send it to your head unit.
+3. Open LocalSend on your phone/PC, select the APK file, and send it to your head unit.
 4. Accept the incoming transfer on your head unit, tap the received APK, and select **Install**.
 
 #### Option B: Via USB Flash Drive
-1. Copy `app-debug.apk` onto a standard FAT32 USB flash drive.
+1. Copy the `.apk` onto a standard FAT32 USB flash drive.
 2. Plug it into one of your head unit's USB ports.
 3. Open the built-in **"File Manager"** or **"ApkInstaller"** on your head unit.
 4. Tap the APK and select **Install**.
@@ -112,3 +113,11 @@ adb install -r app-debug.apk
 2. Go to **Apps & notifications** -> **Default apps** -> **Home app**.
 3. Select **DashFlow**.
 4. Press the Home button on your head unit / navigation bar; it will now permanently open your custom OEM cockpit!
+
+---
+
+## 🤝 Contributing & License
+
+* Contributions are welcome! Read [CONTRIBUTING.md](CONTRIBUTING.md) for architecture guidelines and good first issues.
+* Licensed under the **[MIT License](LICENSE)**.
+* Initial prototype & iterative development powered by Google Antigravity.
