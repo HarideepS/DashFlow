@@ -24,11 +24,17 @@ class BrightnessHelper(private val activity: Activity) {
     fun cycleBrightness(): BrightnessLevel {
         currentLevelIndex = (currentLevelIndex + 1) % levels.size
         val level = levels[currentLevelIndex]
-        applyLevel(level)
+        applyLevel(level, showToast = true)
         return level
     }
 
-    private fun applyLevel(level: BrightnessLevel) {
+    fun applySunBasedDimming(isNight: Boolean) {
+        val target = if (isNight) BrightnessLevel.NIGHT else BrightnessLevel.DAY
+        currentLevelIndex = levels.indexOf(target).coerceAtLeast(0)
+        applyLevel(target, showToast = false)
+    }
+
+    private fun applyLevel(level: BrightnessLevel, showToast: Boolean) {
         val window = activity.window
         val lp = window.attributes
 
@@ -42,7 +48,9 @@ class BrightnessHelper(private val activity: Activity) {
             trySetSystemAutoBrightness(false)
             trySetSystemBrightness(level.systemValue)
         }
-        Toast.makeText(activity, level.title, Toast.LENGTH_SHORT).show()
+        if (showToast) {
+            Toast.makeText(activity, level.title, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun trySetSystemBrightness(value: Int) {

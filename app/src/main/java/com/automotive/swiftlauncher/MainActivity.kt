@@ -1,5 +1,6 @@
 package com.automotive.swiftlauncher
 
+import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.BroadcastReceiver
@@ -8,15 +9,18 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.media.AudioManager
 import android.net.Uri
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -31,6 +35,7 @@ import java.io.FileOutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,12 +44,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var weatherService: WeatherService
     private lateinit var brightnessHelper: BrightnessHelper
     private lateinit var audioManager: AudioManager
+    private lateinit var mediaSessionHelper: MediaSessionHelper
+    private lateinit var speedometerHelper: SpeedometerHelper
 
     private var targetRebindKey: String? = null
     private var lastNonZeroVolume: Int = 8
+    private var lastKnownSpeedKmh: Int = -1
     private var pendingDialogDismiss: (() -> Unit)? = null
 
-    // Activity Result Launcher for re-binding cards
+    // Activity Result Launcher for re-binding cards or picking boot auto-launch app
     private val appPickerLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -65,6 +73,11 @@ class MainActivity : AppCompatActivity() {
                         prefs.youtubePackage = selectedPkg
                         Toast.makeText(this, "YouTube mapped to: $selectedLabel", Toast.LENGTH_SHORT).show()
                     }
+                    PreferenceHelper.KEY_BOOT_LAUNCH_PKG -> {
+                        prefs.bootLaunchPackage = selectedPkg
+                        prefs.bootLaunchLabel = selectedLabel ?: selectedPkg
+                        Toast.makeText(this, "Boot auto-launch set to: $selectedLabel", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
@@ -76,6 +89,18 @@ class MainActivity : AppCompatActivity() {
     ) { uri: Uri? ->
         if (uri != null) {
             saveCustomCarImage(uri)
+        }
+    }
+
+    // Activity Result Launcher for GPS speedometer location permission
+    private val locationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) {
+            speedometerHelper.start()
+            Toast.makeText(this, "GPS Speedometer active", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Location permission needed for live GPS speed", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -100,12 +125,21 @@ class MainActivity : AppCompatActivity() {
         brightnessHelper = BrightnessHelper(this)
         audioManager = applicationContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
+        mediaSessionHelper = MediaSessionHelper(this) { state ->
+            runOnUiThread { renderMediaState(state) }
+        }
+        speedometerHelper = SpeedometerHelper(this) { kmh, _ ->
+            lastKnownSpeedKmh = kmh
+            runOnUiThread { renderSpeedometer() }
+        }
+
         val currentVol = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
         if (currentVol > 0) {
             lastNonZeroVolume = currentVol
         }
 
         setupClockAndDate()
+        setupTelemetryAndMedia()
         setupVehicleDisplay()
         setupCards()
         setupToggles()
@@ -119,6 +153,16 @@ class MainActivity : AppCompatActivity() {
         updateVolumeState()
         updateDateText()
         applyVehicleCustomizations()
+        applyTelemetrySettings()
+
+        if (prefs.autoNightDimming) {
+            brightnessHelper.applySunBasedDimming(weatherService.isNightTimeNow())
+        }
+
+        mediaSessionHelper.start()
+        if (prefs.showSpeedometer && speedometerHelper.hasLocationPermission()) {
+            speedometerHelper.start()
+        }
 
         val filter = IntentFilter().apply {
             addAction(WifiManager.WIFI_STATE_CHANGED_ACTION)
@@ -129,9 +173,30 @@ class MainActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
+        mediaSessionHelper.stop()
+        speedometerHelper.stop()
         try {
             unregisterReceiver(systemStateReceiver)
         } catch (_: Exception) {}
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        // Intercept standard steering-wheel / hardware media keys while on the launcher
+        when (keyCode) {
+            KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE -> {
+                mediaSessionHelper.togglePlayPause()
+                return true
+            }
+            KeyEvent.KEYCODE_MEDIA_NEXT -> {
+                mediaSessionHelper.skipToNext()
+                return true
+            }
+            KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
+                mediaSessionHelper.skipToPrevious()
+                return true
+            }
+        }
+        return super.onKeyDown(keyCode, event)
     }
 
     private fun setupClockAndDate() {
@@ -150,6 +215,77 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Updating weather...", Toast.LENGTH_SHORT).show()
             loadWeather()
         }
+    }
+
+    private fun setupTelemetryAndMedia() {
+        binding.speedometerContainer.setOnClickListener {
+            if (!speedometerHelper.hasLocationPermission()) {
+                locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            } else {
+                prefs.speedUnitMph = !prefs.speedUnitMph
+                renderSpeedometer()
+                val unit = if (prefs.speedUnitMph) "MPH" else "KM/H"
+                Toast.makeText(this, "Speed unit: $unit", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        binding.mediaTrackInfo.setOnClickListener {
+            mediaSessionHelper.openPlayerApp()
+        }
+        binding.btnMediaPrev.setOnClickListener {
+            mediaSessionHelper.skipToPrevious()
+        }
+        binding.btnMediaPlayPause.setOnClickListener {
+            mediaSessionHelper.togglePlayPause()
+        }
+        binding.btnMediaNext.setOnClickListener {
+            mediaSessionHelper.skipToNext()
+        }
+    }
+
+    private fun applyTelemetrySettings() {
+        binding.speedometerContainer.visibility = if (prefs.showSpeedometer) View.VISIBLE else View.GONE
+        renderSpeedometer()
+        applyAccentColor()
+    }
+
+    private fun applyAccentColor() {
+        val parsedColor = try {
+            Color.parseColor(prefs.accentColor)
+        } catch (_: Exception) {
+            Color.parseColor(PreferenceHelper.DEFAULT_ACCENT_COLOR)
+        }
+        binding.textDayDate.setTextColor(parsedColor)
+        binding.iconCustomizeVehicle.setColorFilter(parsedColor)
+        binding.btnMediaPlayPause.setColorFilter(parsedColor)
+    }
+
+    private fun renderSpeedometer() {
+        binding.textSpeedUnit.text = if (prefs.speedUnitMph) "MPH" else "KM/H"
+        if (!speedometerHelper.hasLocationPermission() || lastKnownSpeedKmh < 0) {
+            binding.textSpeedValue.text = "--"
+        } else {
+            val displaySpeed = if (prefs.speedUnitMph) {
+                (lastKnownSpeedKmh * 0.621371f).roundToInt()
+            } else {
+                lastKnownSpeedKmh
+            }
+            binding.textSpeedValue.text = displaySpeed.toString()
+        }
+    }
+
+    private fun renderMediaState(state: MediaUiState) {
+        if (!state.hasActiveSession) {
+            binding.mediaControllerBar.visibility = View.GONE
+            return
+        }
+        binding.mediaControllerBar.visibility = View.VISIBLE
+        binding.textMediaTitle.text = state.title
+        binding.textMediaArtist.text = state.artist.ifEmpty { "Now Playing" }
+        binding.textMediaArtist.visibility = View.VISIBLE
+        binding.btnMediaPlayPause.setImageResource(
+            if (state.isPlaying) R.drawable.ic_media_pause else R.drawable.ic_media_play
+        )
     }
 
     private fun applyClockFormat(is24Hour: Boolean) {
@@ -260,13 +396,29 @@ class MainActivity : AppCompatActivity() {
         val editCity = dialogView.findViewById<EditText>(R.id.editCity)
         val textCarVisualStatus = dialogView.findViewById<TextView>(R.id.textCarVisualStatus)
         val btnClearCustomImage = dialogView.findViewById<Button>(R.id.btnClearCustomImage)
+        val checkShowSpeedometer = dialogView.findViewById<CheckBox>(R.id.checkShowSpeedometer)
+        val checkSpeedMph = dialogView.findViewById<CheckBox>(R.id.checkSpeedMph)
+        val checkAutoDimming = dialogView.findViewById<CheckBox>(R.id.checkAutoDimming)
+        val btnEnableMediaAccess = dialogView.findViewById<Button>(R.id.btnEnableMediaAccess)
+        val textBootLaunchApp = dialogView.findViewById<TextView>(R.id.textBootLaunchApp)
 
         var selectedPreset = prefs.carPreset
         var selectedScale = prefs.carScale
+        var selectedAccent = prefs.accentColor
 
         editVehicleName.setText(prefs.vehicleName)
         editLicensePlate.setText(prefs.licensePlate)
         editCity.setText(prefs.cityName)
+        checkShowSpeedometer.isChecked = prefs.showSpeedometer
+        checkSpeedMph.isChecked = prefs.speedUnitMph
+        checkAutoDimming.isChecked = prefs.autoNightDimming
+
+        btnEnableMediaAccess.text = if (mediaSessionHelper.hasNotificationAccess()) {
+            "🎵 Media Bar Connected (Tap to Configure)"
+        } else {
+            "🎵 Enable Headless Media Bar (Notification Access)"
+        }
+        textBootLaunchApp.text = "Auto-Launch on Cold Boot: ${prefs.bootLaunchLabel}"
 
         fun updateVisualStatusUI() {
             if (selectedPreset == PreferenceHelper.PRESET_CUSTOM && prefs.customCarPath.isNotBlank()) {
@@ -331,11 +483,40 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Scale: 115% Hero", Toast.LENGTH_SHORT).show()
         }
 
+        // Accent Color Selection
+        val accentButtons = mapOf(
+            R.id.btnAccentBlue to "#4D7DF0",
+            R.id.btnAccentCyan to "#00E5FF",
+            R.id.btnAccentEmerald to "#10B981",
+            R.id.btnAccentRed to "#EF4444",
+            R.id.btnAccentAmber to "#F59E0B"
+        )
+        accentButtons.forEach { (btnId, hex) ->
+            dialogView.findViewById<Button>(btnId).setOnClickListener {
+                selectedAccent = hex
+                Toast.makeText(this, "Accent color selected", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        btnEnableMediaAccess.setOnClickListener {
+            mediaSessionHelper.openNotificationAccessSettings()
+        }
+
         val dialog = AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_NoActionBar)
             .setView(dialogView)
             .create()
 
         pendingDialogDismiss = { dialog.dismiss() }
+
+        dialogView.findViewById<Button>(R.id.btnPickBootApp).setOnClickListener {
+            dialog.dismiss()
+            openAppPicker(PreferenceHelper.KEY_BOOT_LAUNCH_PKG)
+        }
+        dialogView.findViewById<Button>(R.id.btnClearBootApp).setOnClickListener {
+            prefs.bootLaunchPackage = ""
+            prefs.bootLaunchLabel = "None (Stay on DashFlow)"
+            textBootLaunchApp.text = "Auto-Launch on Cold Boot: None (Stay on DashFlow)"
+        }
 
         dialogView.findViewById<Button>(R.id.btnCancelSettings).setOnClickListener {
             dialog.dismiss()
@@ -350,14 +531,31 @@ class MainActivity : AppCompatActivity() {
             prefs.licensePlate = newPlate
             prefs.carPreset = selectedPreset
             prefs.carScale = selectedScale
+            prefs.accentColor = selectedAccent
+            prefs.showSpeedometer = checkShowSpeedometer.isChecked
+            prefs.speedUnitMph = checkSpeedMph.isChecked
+            prefs.autoNightDimming = checkAutoDimming.isChecked
 
-            val cityChanged = newCity.isNotBlank() && newCity != prefs.cityName
+            if (prefs.showSpeedometer && !speedometerHelper.hasLocationPermission()) {
+                locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+            } else if (prefs.showSpeedometer) {
+                speedometerHelper.start()
+            } else {
+                speedometerHelper.stop()
+            }
+
+            if (prefs.autoNightDimming) {
+                brightnessHelper.applySunBasedDimming(weatherService.isNightTimeNow())
+            }
+
+            val cityChanged = newCity.isNotBlank() && !newCity.equals(prefs.cityName, ignoreCase = true)
             if (cityChanged) {
                 prefs.cityName = newCity
                 loadWeather()
             }
 
             applyVehicleCustomizations()
+            applyTelemetrySettings()
             dialog.dismiss()
             Toast.makeText(this, "Vehicle settings applied!", Toast.LENGTH_SHORT).show()
         }
@@ -524,9 +722,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadWeather() {
         lifecycleScope.launch {
-            val result = weatherService.fetchWeather()
+            val loc = if (prefs.cityName == PreferenceHelper.DEFAULT_CITY) {
+                speedometerHelper.getLastKnownLocation()
+            } else {
+                null
+            }
+            val result = weatherService.fetchWeather(loc?.latitude, loc?.longitude)
             binding.textWeather.text = result.displayText
             updateWeatherIcon(result.weatherCode)
+            if (prefs.autoNightDimming) {
+                brightnessHelper.applySunBasedDimming(weatherService.isNightTimeNow())
+            }
         }
     }
 

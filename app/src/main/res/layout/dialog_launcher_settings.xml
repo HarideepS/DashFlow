@@ -330,6 +330,176 @@
             android:textColorHint="@color/text_tertiary"
             android:textSize="14sp" />
 
+        <!-- 5. COCKPIT TELEMETRY, THEME & HEAD-UNIT UTILITIES -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="5. Cockpit Telemetry &amp; Head-Unit Utilities"
+            android:textColor="#3B82F6"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <!-- Accent Color Presets -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Dashboard Accent Color"
+            android:textColor="@color/text_primary"
+            android:textSize="13sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="38dp"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnAccentBlue"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:padding="0dp"
+                android:text="Blue"
+                android:textColor="#4D7DF0"
+                android:textSize="11sp"
+                app:strokeColor="#4D7DF0" />
+
+            <Button
+                android:id="@+id/btnAccentCyan"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:padding="0dp"
+                android:text="Cyan"
+                android:textColor="#00E5FF"
+                android:textSize="11sp"
+                app:strokeColor="#00E5FF" />
+
+            <Button
+                android:id="@+id/btnAccentEmerald"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:padding="0dp"
+                android:text="Green"
+                android:textColor="#10B981"
+                android:textSize="11sp"
+                app:strokeColor="#10B981" />
+
+            <Button
+                android:id="@+id/btnAccentRed"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:padding="0dp"
+                android:text="Red"
+                android:textColor="#EF4444"
+                android:textSize="11sp"
+                app:strokeColor="#EF4444" />
+
+            <Button
+                android:id="@+id/btnAccentAmber"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:padding="0dp"
+                android:text="Amber"
+                android:textColor="#F59E0B"
+                android:textSize="11sp"
+                app:strokeColor="#F59E0B" />
+        </LinearLayout>
+
+        <CheckBox
+            android:id="@+id/checkShowSpeedometer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:buttonTint="@color/card_android_auto"
+            android:text="Show live GPS Speedometer pill"
+            android:textColor="@color/text_primary"
+            android:textSize="13sp" />
+
+        <CheckBox
+            android:id="@+id/checkSpeedMph"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/card_android_auto"
+            android:text="Use MPH instead of KM/H"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp" />
+
+        <CheckBox
+            android:id="@+id/checkAutoDimming"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/card_android_auto"
+            android:text="Auto-dim screen at sunset / brighten at sunrise"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp" />
+
+        <!-- Headless Media Controller Permission -->
+        <Button
+            android:id="@+id/btnEnableMediaAccess"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="42dp"
+            android:layout_marginTop="8dp"
+            android:text="🎵 Enable Headless Media Bar (Notification Access)"
+            android:textColor="#60A5FA"
+            android:textSize="12sp"
+            app:strokeColor="#3B82F6" />
+
+        <!-- Boot Auto-Launch -->
+        <TextView
+            android:id="@+id/textBootLaunchApp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Auto-Launch on Cold Boot: None"
+            android:textColor="@color/text_primary"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="4dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnPickBootApp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:text="Pick Boot App"
+                android:textColor="@color/text_primary"
+                android:textSize="12sp"
+                app:strokeColor="#2F3A50" />
+
+            <Button
+                android:id="@+id/btnClearBootApp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Clear"
+                android:textColor="#F87171"
+                android:textSize="12sp"
+                app:strokeColor="#EF4444" />
+        </LinearLayout>
+
         <!-- ACTION BUTTONS -->
         <LinearLayout
             android:layout_width="match_parent"

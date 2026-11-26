@@ -25,6 +25,9 @@
         android:focusable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintEnd_toStartOf="@+id/speedometerContainer"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -36,18 +39,62 @@
             android:format12Hour="hh:mm a"
             android:format24Hour="HH:mm"
             android:textColor="@color/text_time"
-            android:textSize="56sp"
+            android:textSize="54sp"
             tools:text="12:14 AM" />
 
         <TextView
             android:id="@+id/textDayDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="14dp"
+            android:layout_marginStart="12dp"
             android:fontFamily="sans-serif-medium"
             android:textColor="#4D7DF0"
-            android:textSize="18sp"
+            android:textSize="17sp"
             tools:text="Saturday" />
+    </LinearLayout>
+
+    <!-- GPS Speedometer Pill (Tap to toggle KM/H vs MPH or grant GPS) -->
+    <LinearLayout
+        android:id="@+id/speedometerContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/bg_toggle_pill"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:minWidth="74dp"
+        android:orientation="vertical"
+        android:paddingStart="12dp"
+        android:paddingTop="6dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="6dp"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineCenter"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textSpeedValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:includeFontPadding="false"
+            android:text="--"
+            android:textColor="@color/text_primary"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            tools:text="42" />
+
+        <TextView
+            android:id="@+id/textSpeedUnit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.06"
+            android:text="KM/H"
+            android:textColor="@color/text_secondary"
+            android:textSize="10sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <!-- Weather container with condition icon and location/temp -->
@@ -114,9 +161,10 @@
         android:orientation="horizontal"
         android:paddingTop="2dp"
         android:paddingBottom="2dp"
-        app:layout_constraintBottom_toTopOf="@+id/togglesContainer"
+        app:layout_constraintBottom_toTopOf="@+id/mediaControllerBar"
         app:layout_constraintEnd_toStartOf="@+id/guidelineCenter"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_goneMarginBottom="6dp">
 
         <TextView
             android:id="@+id/textVehicleName"
@@ -153,6 +201,85 @@
             android:contentDescription="Customize Vehicle"
             android:src="@drawable/ic_sparkle"
             app:tint="#60A5FA" />
+    </LinearLayout>
+
+    <!-- Headless Media Controller Pill (Auto-shown only when media playback is active) -->
+    <LinearLayout
+        android:id="@+id/mediaControllerBar"
+        android:layout_width="0dp"
+        android:layout_height="46dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/bg_toggle_pill"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="12dp"
+        android:paddingEnd="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/togglesContainer"
+        app:layout_constraintEnd_toStartOf="@+id/guidelineCenter"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:visibility="visible">
+
+        <LinearLayout
+            android:id="@+id/mediaTrackInfo"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textMediaTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="sans-serif-medium"
+                android:maxLines="1"
+                android:textColor="@color/text_primary"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                tools:text="Blinding Lights" />
+
+            <TextView
+                android:id="@+id/textMediaArtist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/text_secondary"
+                android:textSize="11sp"
+                tools:text="The Weeknd" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btnMediaPrev"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Previous Track"
+            android:src="@drawable/ic_media_prev"
+            app:tint="@color/text_primary" />
+
+        <ImageButton
+            android:id="@+id/btnMediaPlayPause"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Play or Pause"
+            android:src="@drawable/ic_media_play"
+            app:tint="#4D7DF0" />
+
+        <ImageButton
+            android:id="@+id/btnMediaNext"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Next Track"
+            android:src="@drawable/ic_media_next"
+            app:tint="@color/text_primary" />
     </LinearLayout>
 
     <!-- Bottom Quick Controls Bar: Exactly 4 Toggles (Wi-Fi, Bluetooth, Auto Bright, Volume) -->
