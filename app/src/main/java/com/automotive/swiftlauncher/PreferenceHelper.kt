@@ -67,7 +67,7 @@ class PreferenceHelper(context: Context) {
         set(value) = prefs.edit().putString(KEY_YOUTUBE_PKG, value).apply()
 
     var cachedWeather: String
-        get() = prefs.getString(KEY_CACHED_WEATHER, "Hyderabad, 28°C Haze") ?: "Hyderabad, 28°C Haze"
+        get() = prefs.getString(KEY_CACHED_WEATHER, null) ?: "$cityName, --°C"
         set(value) = prefs.edit().putString(KEY_CACHED_WEATHER, value).apply()
 
     var weatherCode: Int

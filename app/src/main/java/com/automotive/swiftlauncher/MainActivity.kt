@@ -721,6 +721,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadWeather() {
+        // Paint cached reading immediately for instant offline-first startup
+        binding.textWeather.text = prefs.cachedWeather
+        updateWeatherIcon(prefs.weatherCode)
+
         lifecycleScope.launch {
             val loc = if (prefs.cityName == PreferenceHelper.DEFAULT_CITY) {
                 speedometerHelper.getLastKnownLocation()
