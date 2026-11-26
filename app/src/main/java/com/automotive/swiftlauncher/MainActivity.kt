@@ -256,7 +256,6 @@ class MainActivity : AppCompatActivity() {
             Color.parseColor(PreferenceHelper.DEFAULT_ACCENT_COLOR)
         }
         binding.textDayDate.setTextColor(parsedColor)
-        binding.iconCustomizeVehicle.setColorFilter(parsedColor)
         binding.btnMediaPlayPause.setColorFilter(parsedColor)
     }
 
@@ -430,7 +429,7 @@ class MainActivity : AppCompatActivity() {
                     PreferenceHelper.PRESET_SUV -> "SUV (Crossover Silhouette)"
                     PreferenceHelper.PRESET_SPORTS -> "Sports GT (Supercar Silhouette)"
                     PreferenceHelper.PRESET_EV -> "Cyber EV (Electric Silhouette)"
-                    else -> "Swift (OEM Render)"
+                    else -> "Hatchback"
                 }
                 textCarVisualStatus.text = "Active visual: $label"
                 btnClearCustomImage.visibility = View.GONE
@@ -438,8 +437,8 @@ class MainActivity : AppCompatActivity() {
         }
         updateVisualStatusUI()
 
-        dialogView.findViewById<Button>(R.id.btnPresetSwift).setOnClickListener {
-            selectedPreset = PreferenceHelper.PRESET_SWIFT
+        dialogView.findViewById<Button>(R.id.btnPresetHatchback).setOnClickListener {
+            selectedPreset = PreferenceHelper.PRESET_HATCHBACK
             updateVisualStatusUI()
         }
         dialogView.findViewById<Button>(R.id.btnPresetSedan).setOnClickListener {
@@ -465,7 +464,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         btnClearCustomImage.setOnClickListener {
-            selectedPreset = PreferenceHelper.PRESET_SWIFT
+            selectedPreset = PreferenceHelper.PRESET_HATCHBACK
             prefs.customCarPath = ""
             updateVisualStatusUI()
         }
@@ -561,6 +560,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         dialog.show()
+        val maxDialogWidth = (resources.displayMetrics.density * 680).toInt()
+        val targetWidth = minOf((resources.displayMetrics.widthPixels * 0.84f).toInt(), maxDialogWidth)
+        val maxHeight = (resources.displayMetrics.heightPixels * 0.90f).toInt()
+        dialog.window?.setLayout(targetWidth, maxHeight)
     }
 
     private fun setupCards() {

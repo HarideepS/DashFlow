@@ -66,7 +66,7 @@ Most aftermarket head-unit launchers trigger Android's **Low Memory Killer (LMK)
 ### 1. 🚘 Universal Vehicle Dashboard Customizer
 Tap the car image or the vehicle badge at any time (or long-press the **Settings** card) to launch the in-cockpit Customizer:
 * **Custom Vehicle Model & License Plate**: Personalize your ride's model name and optional registration plate badge directly on the dashboard.
-* **Built-in Silhouette Presets**: Switch instantly between **Swift OEM**, **Sport Sedan**, **Urban SUV**, **Sports GT**, and **Cyber EV**.
+* **Built-in Silhouette Presets**: Switch instantly between **Hatchback**, **Sport Sedan**, **Urban SUV**, **Sports GT**, and **Cyber EV**.
 * **Upload Any Custom Car Photo / PNG**: Pick any photo of your own car from device storage/gallery with automatic memory-safe downsampling.
 * **Accent Colors & Scaling**: Choose custom cockpit accent colors (`Blue`, `Cyan`, `Green`, `Red`, `Amber`) and vehicle scale (`85% Compact`, `100% Default`, `115% Hero`).
 

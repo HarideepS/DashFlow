@@ -65,59 +65,81 @@
             android:textSize="14sp"
             android:textStyle="bold" />
 
-        <!-- Vehicle Name -->
-        <TextView
-            android:layout_width="wrap_content"
+        <!-- Vehicle Name & License Plate (Side-by-side for landscape ergonomics) -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:fontFamily="sans-serif-medium"
-            android:text="Vehicle Model / Display Name"
-            android:textColor="@color/text_primary"
-            android:textSize="13sp" />
+            android:baselineAligned="false"
+            android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/editVehicleName"
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:layout_marginTop="4dp"
-            android:background="@drawable/bg_toggle_pill"
-            android:hint="e.g. Maruti Suzuki Swift, Hyundai Creta, Honda Civic"
-            android:inputType="textCapWords"
-            android:paddingStart="14dp"
-            android:paddingEnd="14dp"
-            android:textColor="@color/text_primary"
-            android:textColorHint="@color/text_tertiary"
-            android:textSize="14sp" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1.2"
+                android:orientation="vertical">
 
-        <!-- License Plate -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:fontFamily="sans-serif-medium"
-            android:text="Vehicle License Plate / Tag"
-            android:textColor="@color/text_primary"
-            android:textSize="13sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Vehicle Model / Display Name"
+                    android:textColor="@color/text_primary"
+                    android:textSize="12sp" />
 
-        <EditText
-            android:id="@+id/editLicensePlate"
-            android:layout_width="match_parent"
-            android:layout_height="44dp"
-            android:layout_marginTop="4dp"
-            android:background="@drawable/bg_toggle_pill"
-            android:hint="e.g. TG08 G6391 (leave empty to hide)"
-            android:inputType="textCapCharacters"
-            android:paddingStart="14dp"
-            android:paddingEnd="14dp"
-            android:textColor="@color/text_primary"
-            android:textColorHint="@color/text_tertiary"
-            android:textSize="14sp" />
+                <EditText
+                    android:id="@+id/editVehicleName"
+                    android:layout_width="match_parent"
+                    android:layout_height="42dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/bg_toggle_pill"
+                    android:hint="e.g. Honda Civic, Golf, Creta"
+                    android:inputType="textCapWords"
+                    android:maxLines="1"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_tertiary"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="License Plate (Optional)"
+                    android:textColor="@color/text_primary"
+                    android:textSize="12sp" />
+
+                <EditText
+                    android:id="@+id/editLicensePlate"
+                    android:layout_width="match_parent"
+                    android:layout_height="42dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@drawable/bg_toggle_pill"
+                    android:hint="Leave empty to hide"
+                    android:inputType="textCapCharacters"
+                    android:maxLines="1"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_tertiary"
+                    android:textSize="13sp" />
+            </LinearLayout>
+        </LinearLayout>
 
         <!-- 2. CAR VISUAL PRESETS & CUSTOM UPLOAD -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="14dp"
             android:fontFamily="sans-serif-medium"
             android:text="2. Dashboard Car Visual"
             android:textColor="#3B82F6"
@@ -127,8 +149,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Select a built-in silhouette preset or pick a custom photo of your own car:"
+            android:layout_marginTop="2dp"
+            android:text="Select a built-in preset or pick a custom photo of your own car:"
             android:textColor="@color/text_secondary"
             android:textSize="12sp" />
 
@@ -140,14 +162,14 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/btnPresetSwift"
+                android:id="@+id/btnPresetHatchback"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="6dp"
                 android:layout_weight="1"
                 android:padding="0dp"
-                android:text="Swift"
+                android:text="Hatchback"
                 android:textColor="@color/text_primary"
                 android:textSize="12sp"
                 app:strokeColor="#2F3A50" />
@@ -248,7 +270,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Active visual: Swift render"
+            android:text="Active visual: Hatchback"
             android:textColor="@color/text_secondary"
             android:textSize="12sp" />
 

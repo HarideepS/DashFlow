@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 1280x720 Head Units & Mid Landscape (sw480dp) -->
+    <dimen name="root_padding_h">18dp</dimen>
+    <dimen name="root_padding_v">14dp</dimen>
+    <dimen name="panel_gap">14dp</dimen>
+    <dimen name="card_gap">10dp</dimen>
+    <dimen name="card_half_gap">5dp</dimen>
+
+    <!-- Header & Telemetry -->
+    <dimen name="clock_text_size">48sp</dimen>
+    <dimen name="day_text_size">16sp</dimen>
+    <dimen name="weather_icon_size">26dp</dimen>
+    <dimen name="weather_text_size">15sp</dimen>
+    <dimen name="speed_value_text_size">24sp</dimen>
+    <dimen name="speed_unit_text_size">10sp</dimen>
+    <dimen name="speed_min_width">68dp</dimen>
+
+    <!-- Vehicle Badge & Media Bar -->
+    <dimen name="vehicle_name_text_size">13sp</dimen>
+    <dimen name="media_bar_height">44dp</dimen>
+
+    <!-- Bottom Quick Toggles -->
+    <dimen name="toggles_height">64dp</dimen>
+    <dimen name="toggle_icon_size">28dp</dimen>
+    <dimen name="toggle_text_size">12sp</dimen>
+    <dimen name="toggle_gap">8dp</dimen>
+
+    <!-- Right Panel Cards -->
+    <dimen name="square_card_icon_max">84dp</dimen>
+    <dimen name="square_card_text_size">15sp</dimen>
+    <dimen name="rect_card_icon_size">36dp</dimen>
+    <dimen name="rect_card_text_size">17sp</dimen>
+    <dimen name="rect_card_padding_h">16dp</dimen>
+    <dimen name="chevron_size">20dp</dimen>
+</resources>

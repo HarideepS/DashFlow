@@ -43,10 +43,10 @@ class PreferenceHelper(context: Context) {
         const val DEFAULT_CITY = "Hyderabad"
         const val DEFAULT_LAT = 17.3850f
         const val DEFAULT_LON = 78.4867f
-        const val DEFAULT_VEHICLE_NAME = "Maruti Suzuki Swift"
-        const val DEFAULT_LICENSE_PLATE = "TG08 G6391"
+        const val DEFAULT_VEHICLE_NAME = "Hatchback"
+        const val DEFAULT_LICENSE_PLATE = ""
         const val DEFAULT_ACCENT_COLOR = "#4D7DF0"
-        const val PRESET_SWIFT = "swift"
+        const val PRESET_HATCHBACK = "hatchback"
         const val PRESET_SEDAN = "sedan"
         const val PRESET_SUV = "suv"
         const val PRESET_SPORTS = "sports"
@@ -111,7 +111,7 @@ class PreferenceHelper(context: Context) {
         set(value) = prefs.edit().putString(KEY_LICENSE_PLATE, value).apply()
 
     var carPreset: String
-        get() = prefs.getString(KEY_CAR_PRESET, PRESET_SWIFT) ?: PRESET_SWIFT
+        get() = prefs.getString(KEY_CAR_PRESET, PRESET_HATCHBACK) ?: PRESET_HATCHBACK
         set(value) = prefs.edit().putString(KEY_CAR_PRESET, value).apply()
 
     var customCarPath: String
