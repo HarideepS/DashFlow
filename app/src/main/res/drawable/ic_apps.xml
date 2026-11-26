@@ -3,12 +3,8 @@
     android:height="32dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
-    <!-- Rounded Apps Outline Icon -->
+    <!-- Clean 3x3 Rounded App Grid Icon -->
     <path
-        android:strokeColor="#FFFFFFFF"
-        android:strokeWidth="2"
-        android:strokeLineCap="round"
-        android:strokeLineJoin="round"
-        android:fillColor="#00000000"
-        android:pathData="M7,3H17C19.2,3 21,4.8 21,7V17C21,19.2 19.2,21 17,21H7C4.8,21 3,19.2 3,17V7C3,4.8 4.8,3 7,3Z" />
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M4,4h4v4H4V4zM10,4h4v4h-4V4zM16,4h4v4h-4V4zM4,10h4v4H4v-4zM10,10h4v4h-4v-4zM16,10h4v4h-4v-4zM4,16h4v4H4v-4zM10,16h4v4h-4v-4zM16,16h4v4h-4v-4z" />
 </vector>

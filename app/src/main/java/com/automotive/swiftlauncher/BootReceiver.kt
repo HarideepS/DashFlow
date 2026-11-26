@@ -20,6 +20,8 @@ class BootReceiver : BroadcastReceiver() {
         }
 
         val prefs = PreferenceHelper(context)
+        FloatingMuteService.sync(context)
+
         val targetPkg = prefs.bootLaunchPackage.trim()
         if (targetPkg.isEmpty()) return
 

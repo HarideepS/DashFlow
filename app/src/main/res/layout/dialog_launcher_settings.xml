@@ -476,6 +476,15 @@
             android:textColor="@color/text_secondary"
             android:textSize="13sp" />
 
+        <CheckBox
+            android:id="@+id/checkFloatingMute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/card_android_auto"
+            android:text="Persistent floating Mute pill over AA / CarPlay / YT (when Default Home)"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp" />
+
         <!-- Headless Media Controller Permission -->
         <Button
             android:id="@+id/btnEnableMediaAccess"

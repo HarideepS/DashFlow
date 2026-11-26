@@ -35,6 +35,11 @@ class PreferenceHelper(context: Context) {
         const val KEY_AUTO_DIMMING = "pref_auto_dimming"
         const val KEY_BOOT_LAUNCH_PKG = "pref_boot_launch_pkg"
         const val KEY_BOOT_LAUNCH_LABEL = "pref_boot_launch_label"
+        const val KEY_FLOATING_MUTE_ENABLED = "pref_floating_mute_enabled"
+        const val KEY_FLOATING_MUTE_PROMPTED = "pref_floating_mute_prompted"
+        const val KEY_FLOATING_PILL_X = "pref_floating_pill_x"
+        const val KEY_FLOATING_PILL_Y = "pref_floating_pill_y"
+        const val KEY_LAST_MEDIA_VOLUME = "pref_last_media_volume"
 
         // Defaults
         const val DEFAULT_AA_PKG = "io.github.slashmax.openheadunit"
@@ -145,4 +150,24 @@ class PreferenceHelper(context: Context) {
     var bootLaunchLabel: String
         get() = prefs.getString(KEY_BOOT_LAUNCH_LABEL, "None (Stay on DashFlow)") ?: "None (Stay on DashFlow)"
         set(value) = prefs.edit().putString(KEY_BOOT_LAUNCH_LABEL, value).apply()
+
+    var floatingMuteEnabled: Boolean
+        get() = prefs.getBoolean(KEY_FLOATING_MUTE_ENABLED, true)
+        set(value) = prefs.edit().putBoolean(KEY_FLOATING_MUTE_ENABLED, value).apply()
+
+    var floatingMutePrompted: Boolean
+        get() = prefs.getBoolean(KEY_FLOATING_MUTE_PROMPTED, false)
+        set(value) = prefs.edit().putBoolean(KEY_FLOATING_MUTE_PROMPTED, value).apply()
+
+    var floatingPillX: Int
+        get() = prefs.getInt(KEY_FLOATING_PILL_X, -1)
+        set(value) = prefs.edit().putInt(KEY_FLOATING_PILL_X, value).apply()
+
+    var floatingPillY: Int
+        get() = prefs.getInt(KEY_FLOATING_PILL_Y, -1)
+        set(value) = prefs.edit().putInt(KEY_FLOATING_PILL_Y, value).apply()
+
+    var lastMediaVolume: Int
+        get() = prefs.getInt(KEY_LAST_MEDIA_VOLUME, 8)
+        set(value) = prefs.edit().putInt(KEY_LAST_MEDIA_VOLUME, value).apply()
 }

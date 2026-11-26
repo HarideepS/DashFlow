@@ -168,6 +168,7 @@ class MainActivity : AppCompatActivity() {
         if (prefs.showSpeedometer && speedometerHelper.hasLocationPermission()) {
             speedometerHelper.start()
         }
+        syncFloatingMuteOverlay(promptIfMissing = !prefs.floatingMutePrompted)
 
         val filter = IntentFilter().apply {
             addAction(WifiManager.WIFI_STATE_CHANGED_ACTION)
@@ -447,6 +448,7 @@ class MainActivity : AppCompatActivity() {
         val checkShowSpeedometer = dialogView.findViewById<CheckBox>(R.id.checkShowSpeedometer)
         val checkSpeedMph = dialogView.findViewById<CheckBox>(R.id.checkSpeedMph)
         val checkAutoDimming = dialogView.findViewById<CheckBox>(R.id.checkAutoDimming)
+        val checkFloatingMute = dialogView.findViewById<CheckBox>(R.id.checkFloatingMute)
         val btnEnableMediaAccess = dialogView.findViewById<Button>(R.id.btnEnableMediaAccess)
         val textBootLaunchApp = dialogView.findViewById<TextView>(R.id.textBootLaunchApp)
 
@@ -460,6 +462,7 @@ class MainActivity : AppCompatActivity() {
         checkShowSpeedometer.isChecked = prefs.showSpeedometer
         checkSpeedMph.isChecked = prefs.speedUnitMph
         checkAutoDimming.isChecked = prefs.autoNightDimming
+        checkFloatingMute.isChecked = prefs.floatingMuteEnabled
 
         btnEnableMediaAccess.text = if (mediaSessionHelper.hasNotificationAccess()) {
             "🎵 Media Bar Connected (Tap to Configure)"
@@ -511,6 +514,7 @@ class MainActivity : AppCompatActivity() {
             checkShowSpeedometer.buttonTintList = accentStateList
             checkSpeedMph.buttonTintList = accentStateList
             checkAutoDimming.buttonTintList = accentStateList
+            checkFloatingMute.buttonTintList = accentStateList
             btnSaveSettings.backgroundTintList = accentStateList
             (btnPickCustomImage as? MaterialButton)?.apply {
                 setTextColor(accentColor)
@@ -643,6 +647,13 @@ class MainActivity : AppCompatActivity() {
             prefs.showSpeedometer = checkShowSpeedometer.isChecked
             prefs.speedUnitMph = checkSpeedMph.isChecked
             prefs.autoNightDimming = checkAutoDimming.isChecked
+            prefs.floatingMuteEnabled = checkFloatingMute.isChecked
+
+            if (prefs.floatingMuteEnabled && !Settings.canDrawOverlays(this)) {
+                openOverlayPermissionSettings()
+            } else {
+                FloatingMuteService.sync(this)
+            }
 
             if (prefs.showSpeedometer && !speedometerHelper.hasLocationPermission()) {
                 locationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -765,14 +776,49 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun syncFloatingMuteOverlay(promptIfMissing: Boolean) {
+        FloatingMuteService.sync(this)
+        if (prefs.floatingMuteEnabled &&
+            FloatingMuteService.isDefaultHomeApp(this) &&
+            !Settings.canDrawOverlays(this) &&
+            promptIfMissing
+        ) {
+            prefs.floatingMutePrompted = true
+            AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
+                .setTitle("Enable Floating Mute Pill?")
+                .setMessage(
+                    "DashFlow is your default launcher! Allow 'Display over other apps' so a small draggable Mute button stays accessible even inside Android Auto, CarPlay, or YouTube."
+                )
+                .setPositiveButton("Allow") { _, _ -> openOverlayPermissionSettings() }
+                .setNegativeButton("Not Now", null)
+                .show()
+        }
+    }
+
+    private fun openOverlayPermissionSettings() {
+        try {
+            val intent = Intent(
+                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:$packageName")
+            ).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            startActivity(intent)
+        } catch (_: Exception) {
+            Toast.makeText(this, "Enable 'Display over other apps' in Settings", Toast.LENGTH_LONG).show()
+        }
+    }
+
     private fun toggleVolumeMute() {
         val current = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
         if (current > 0) {
             lastNonZeroVolume = current
+            prefs.lastMediaVolume = current
             audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, AudioManager.FLAG_SHOW_UI)
             Toast.makeText(this, "Muted", Toast.LENGTH_SHORT).show()
         } else {
-            val target = if (lastNonZeroVolume > 0) lastNonZeroVolume else (audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC) * 0.6).toInt()
+            val saved = if (prefs.lastMediaVolume > 0) prefs.lastMediaVolume else lastNonZeroVolume
+            val target = if (saved > 0) saved else (audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC) * 0.6).toInt()
             audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, target, AudioManager.FLAG_SHOW_UI or AudioManager.FLAG_PLAY_SOUND)
             Toast.makeText(this, "Unmuted ($target)", Toast.LENGTH_SHORT).show()
         }
