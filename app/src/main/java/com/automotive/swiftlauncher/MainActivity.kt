@@ -7,9 +7,13 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.RippleDrawable
 import android.media.AudioManager
 import android.net.Uri
 import android.net.wifi.WifiManager
@@ -29,6 +33,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.automotive.swiftlauncher.databinding.ActivityMainBinding
+import com.google.android.material.button.MaterialButton
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
@@ -249,14 +254,58 @@ class MainActivity : AppCompatActivity() {
         applyAccentColor()
     }
 
-    private fun applyAccentColor() {
-        val parsedColor = try {
-            Color.parseColor(prefs.accentColor)
+    private fun parseAccentColor(hex: String = prefs.accentColor): Int {
+        return try {
+            Color.parseColor(hex)
         } catch (_: Exception) {
             Color.parseColor(PreferenceHelper.DEFAULT_ACCENT_COLOR)
         }
+    }
+
+    private fun createTintedPillDrawable(
+        accentColor: Int,
+        fillAlpha: Int = 44,
+        strokeAlpha: Int = 255,
+        strokeDp: Float = 1.5f
+    ): Drawable {
+        val fillColor = Color.argb(
+            fillAlpha,
+            Color.red(accentColor),
+            Color.green(accentColor),
+            Color.blue(accentColor)
+        )
+        val strokeColor = Color.argb(
+            strokeAlpha,
+            Color.red(accentColor),
+            Color.green(accentColor),
+            Color.blue(accentColor)
+        )
+        val radiusPx = 14f * resources.displayMetrics.density
+        val strokePx = (strokeDp * resources.displayMetrics.density).roundToInt()
+        val shape = GradientDrawable().apply {
+            shape = GradientDrawable.RECTANGLE
+            cornerRadius = radiusPx
+            setColor(fillColor)
+            setStroke(strokePx, strokeColor)
+        }
+        val rippleColor = ColorStateList.valueOf(Color.argb(38, 255, 255, 255))
+        return RippleDrawable(rippleColor, shape, null)
+    }
+
+    private fun applyAccentColor() {
+        val parsedColor = parseAccentColor()
         binding.textDayDate.setTextColor(parsedColor)
+        binding.textSpeedUnit.setTextColor(parsedColor)
+        binding.speedometerContainer.background = createTintedPillDrawable(
+            parsedColor,
+            fillAlpha = 20,
+            strokeAlpha = 120,
+            strokeDp = 1f
+        )
         binding.btnMediaPlayPause.setColorFilter(parsedColor)
+        binding.chevronSettings.setColorFilter(parsedColor)
+        binding.chevronAllApps.setColorFilter(parsedColor)
+        updateWifiState()
     }
 
     private fun renderSpeedometer() {
@@ -419,6 +468,93 @@ class MainActivity : AppCompatActivity() {
         }
         textBootLaunchApp.text = "Auto-Launch on Cold Boot: ${prefs.bootLaunchLabel}"
 
+        val sectionHeaders = listOf(
+            R.id.sectionHeader1,
+            R.id.sectionHeader2,
+            R.id.sectionHeader3,
+            R.id.sectionHeader4,
+            R.id.sectionHeader5
+        ).map { dialogView.findViewById<TextView>(it) }
+        val btnPickCustomImage = dialogView.findViewById<Button>(R.id.btnPickCustomImage)
+        val btnSaveSettings = dialogView.findViewById<Button>(R.id.btnSaveSettings)
+
+        val presetButtons = mapOf(
+            PreferenceHelper.PRESET_HATCHBACK to dialogView.findViewById<Button>(R.id.btnPresetHatchback),
+            PreferenceHelper.PRESET_SEDAN to dialogView.findViewById<Button>(R.id.btnPresetSedan),
+            PreferenceHelper.PRESET_SUV to dialogView.findViewById<Button>(R.id.btnPresetSuv),
+            PreferenceHelper.PRESET_SPORTS to dialogView.findViewById<Button>(R.id.btnPresetSports),
+            PreferenceHelper.PRESET_EV to dialogView.findViewById<Button>(R.id.btnPresetEv)
+        )
+        val sizeButtons = listOf(
+            0.85f to dialogView.findViewById<Button>(R.id.btnSizeSmall),
+            1.0f to dialogView.findViewById<Button>(R.id.btnSizeNormal),
+            1.15f to dialogView.findViewById<Button>(R.id.btnSizeLarge)
+        )
+        val accentButtons = mapOf(
+            R.id.btnAccentBlue to "#4D7DF0",
+            R.id.btnAccentCyan to "#00E5FF",
+            R.id.btnAccentEmerald to "#10B981",
+            R.id.btnAccentRed to "#EF4444",
+            R.id.btnAccentAmber to "#F59E0B"
+        )
+
+        fun updateDialogSelectionsAndTheme() {
+            val accentColor = parseAccentColor(selectedAccent)
+            val accentStateList = ColorStateList.valueOf(accentColor)
+            val subtleFill = ColorStateList.valueOf(
+                Color.argb(36, Color.red(accentColor), Color.green(accentColor), Color.blue(accentColor))
+            )
+            val defaultStroke = ColorStateList.valueOf(Color.parseColor("#2F3A50"))
+            val transparentFill = ColorStateList.valueOf(Color.TRANSPARENT)
+
+            sectionHeaders.forEach { it.setTextColor(accentColor) }
+            checkShowSpeedometer.buttonTintList = accentStateList
+            checkSpeedMph.buttonTintList = accentStateList
+            checkAutoDimming.buttonTintList = accentStateList
+            btnSaveSettings.backgroundTintList = accentStateList
+            (btnPickCustomImage as? MaterialButton)?.apply {
+                setTextColor(accentColor)
+                strokeColor = accentStateList
+            }
+            (btnEnableMediaAccess as? MaterialButton)?.apply {
+                setTextColor(accentColor)
+                strokeColor = accentStateList
+            }
+
+            val normalizedPreset = if (selectedPreset == "swift") PreferenceHelper.PRESET_HATCHBACK else selectedPreset
+            presetButtons.forEach { (key, btn) ->
+                val active = (key == normalizedPreset)
+                (btn as? MaterialButton)?.apply {
+                    strokeColor = if (active) accentStateList else defaultStroke
+                    backgroundTintList = if (active) subtleFill else transparentFill
+                }
+            }
+
+            sizeButtons.forEach { (scale, btn) ->
+                val active = kotlin.math.abs(selectedScale - scale) < 0.05f
+                (btn as? MaterialButton)?.apply {
+                    strokeColor = if (active) accentStateList else defaultStroke
+                    backgroundTintList = if (active) subtleFill else transparentFill
+                }
+            }
+
+            accentButtons.forEach { (btnId, hex) ->
+                val btn = dialogView.findViewById<Button>(btnId)
+                val btnColor = parseAccentColor(hex)
+                val active = hex.equals(selectedAccent, ignoreCase = true)
+                (btn as? MaterialButton)?.apply {
+                    strokeColor = ColorStateList.valueOf(btnColor)
+                    backgroundTintList = if (active) {
+                        ColorStateList.valueOf(
+                            Color.argb(56, Color.red(btnColor), Color.green(btnColor), Color.blue(btnColor))
+                        )
+                    } else {
+                        transparentFill
+                    }
+                }
+            }
+        }
+
         fun updateVisualStatusUI() {
             if (selectedPreset == PreferenceHelper.PRESET_CUSTOM && prefs.customCarPath.isNotBlank()) {
                 textCarVisualStatus.text = "Active visual: Custom Gallery Photo"
@@ -434,31 +570,18 @@ class MainActivity : AppCompatActivity() {
                 textCarVisualStatus.text = "Active visual: $label"
                 btnClearCustomImage.visibility = View.GONE
             }
+            updateDialogSelectionsAndTheme()
         }
         updateVisualStatusUI()
 
-        dialogView.findViewById<Button>(R.id.btnPresetHatchback).setOnClickListener {
-            selectedPreset = PreferenceHelper.PRESET_HATCHBACK
-            updateVisualStatusUI()
-        }
-        dialogView.findViewById<Button>(R.id.btnPresetSedan).setOnClickListener {
-            selectedPreset = PreferenceHelper.PRESET_SEDAN
-            updateVisualStatusUI()
-        }
-        dialogView.findViewById<Button>(R.id.btnPresetSuv).setOnClickListener {
-            selectedPreset = PreferenceHelper.PRESET_SUV
-            updateVisualStatusUI()
-        }
-        dialogView.findViewById<Button>(R.id.btnPresetSports).setOnClickListener {
-            selectedPreset = PreferenceHelper.PRESET_SPORTS
-            updateVisualStatusUI()
-        }
-        dialogView.findViewById<Button>(R.id.btnPresetEv).setOnClickListener {
-            selectedPreset = PreferenceHelper.PRESET_EV
-            updateVisualStatusUI()
+        presetButtons.forEach { (presetKey, btn) ->
+            btn.setOnClickListener {
+                selectedPreset = presetKey
+                updateVisualStatusUI()
+            }
         }
 
-        dialogView.findViewById<Button>(R.id.btnPickCustomImage).setOnClickListener {
+        btnPickCustomImage.setOnClickListener {
             pendingDialogDismiss?.invoke()
             imagePickerLauncher.launch("image/*")
         }
@@ -469,31 +592,17 @@ class MainActivity : AppCompatActivity() {
             updateVisualStatusUI()
         }
 
-        dialogView.findViewById<Button>(R.id.btnSizeSmall).setOnClickListener {
-            selectedScale = 0.85f
-            Toast.makeText(this, "Scale: 85% Compact", Toast.LENGTH_SHORT).show()
-        }
-        dialogView.findViewById<Button>(R.id.btnSizeNormal).setOnClickListener {
-            selectedScale = 1.0f
-            Toast.makeText(this, "Scale: 100% Default", Toast.LENGTH_SHORT).show()
-        }
-        dialogView.findViewById<Button>(R.id.btnSizeLarge).setOnClickListener {
-            selectedScale = 1.15f
-            Toast.makeText(this, "Scale: 115% Hero", Toast.LENGTH_SHORT).show()
+        sizeButtons.forEach { (scale, btn) ->
+            btn.setOnClickListener {
+                selectedScale = scale
+                updateDialogSelectionsAndTheme()
+            }
         }
 
-        // Accent Color Selection
-        val accentButtons = mapOf(
-            R.id.btnAccentBlue to "#4D7DF0",
-            R.id.btnAccentCyan to "#00E5FF",
-            R.id.btnAccentEmerald to "#10B981",
-            R.id.btnAccentRed to "#EF4444",
-            R.id.btnAccentAmber to "#F59E0B"
-        )
         accentButtons.forEach { (btnId, hex) ->
             dialogView.findViewById<Button>(btnId).setOnClickListener {
                 selectedAccent = hex
-                Toast.makeText(this, "Accent color selected", Toast.LENGTH_SHORT).show()
+                updateDialogSelectionsAndTheme()
             }
         }
 
@@ -714,12 +823,14 @@ class MainActivity : AppCompatActivity() {
         try {
             val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
             val isEnabled = wifiManager.isWifiEnabled
-            binding.btnWifi.setBackgroundResource(
-                if (isEnabled) R.drawable.bg_toggle_pill_active else R.drawable.bg_toggle_pill
-            )
-            binding.iconWifi.setColorFilter(
-                ContextCompat.getColor(this, if (isEnabled) R.color.card_android_auto else R.color.text_primary)
-            )
+            val accentColor = parseAccentColor()
+            if (isEnabled) {
+                binding.btnWifi.background = createTintedPillDrawable(accentColor)
+                binding.iconWifi.setColorFilter(accentColor)
+            } else {
+                binding.btnWifi.setBackgroundResource(R.drawable.bg_toggle_pill)
+                binding.iconWifi.setColorFilter(ContextCompat.getColor(this, R.color.text_primary))
+            }
         } catch (_: Exception) {}
     }
 

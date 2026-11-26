@@ -686,6 +686,7 @@
                         app:autoSizeTextType="uniform" />
 
                     <ImageView
+                        android:id="@+id/chevronSettings"
                         android:layout_width="@dimen/chevron_size"
                         android:layout_height="@dimen/chevron_size"
                         android:contentDescription="Open Settings"
@@ -735,6 +736,7 @@
                         app:autoSizeTextType="uniform" />
 
                     <ImageView
+                        android:id="@+id/chevronAllApps"
                         android:layout_width="@dimen/chevron_size"
                         android:layout_height="@dimen/chevron_size"
                         android:contentDescription="Open App Drawer"

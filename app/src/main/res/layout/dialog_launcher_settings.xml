@@ -57,6 +57,7 @@
 
         <!-- 1. VEHICLE IDENTITY SECTION -->
         <TextView
+            android:id="@+id/sectionHeader1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-medium"
@@ -137,6 +138,7 @@
 
         <!-- 2. CAR VISUAL PRESETS & CUSTOM UPLOAD -->
         <TextView
+            android:id="@+id/sectionHeader2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
@@ -276,6 +278,7 @@
 
         <!-- 3. CAR DISPLAY SIZING -->
         <TextView
+            android:id="@+id/sectionHeader3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -329,6 +332,7 @@
 
         <!-- 4. WEATHER LOCATION -->
         <TextView
+            android:id="@+id/sectionHeader4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -354,6 +358,7 @@
 
         <!-- 5. COCKPIT TELEMETRY, THEME & HEAD-UNIT UTILITIES -->
         <TextView
+            android:id="@+id/sectionHeader5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
