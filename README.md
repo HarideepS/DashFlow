@@ -46,6 +46,10 @@ If you downloaded directly in the browser on your head unit/tablet/phone, just t
 3. Select **DashFlow**.
 4. Press the Home button — your custom OEM cockpit is now live!
 
+> **Android 13+ Sideload Tip ("App was denied access / Restricted setting"):**  
+> On Android 13, 14, and 15 phones/tablets, sideloaded APKs block **Display over other apps** (Floating Mute Pill) and **Notification access** (Media Bar) by default. To unlock them in 5 seconds:  
+> Open **Settings → Apps → See all apps → DashFlow → tap `⋮` (top-right) → Allow restricted settings**, then re-enable the permission. *(Android 8.1–12 head units do not have this restriction.)*
+
 ---
 
 ## 🧠 Architecture & Zero-Bloat Engineering
