@@ -92,7 +92,7 @@ Tap the car image or the vehicle badge at any time (or long-press the **Settings
 3. **YouTube**: Maps to YouTube / ReVanced / NewPipe.
 4. **Settings & All Apps**: Direct access to system settings and an instant-search app drawer.
 * **Smart App Re-Binding**: Long-press any driving card to assign it to any installed app on your unit (ideal if your head unit uses custom package names like `cn.manstep.phonemirrorbox` or `com.syu.zlink`).
-* **Persistent Floating Mute Pill**: Once DashFlow is set as your Default Home app (and overlay permission is granted), a small draggable Mute/Unmute pill stays visible over Android Auto, CarPlay, and YouTube so you can silence audio anytime without leaving navigation.
+* **Persistent Floating Mute Pill**: Once enabled with overlay permission granted, a small draggable Mute/Unmute pill stays visible over Android Auto, CarPlay, and YouTube so you can silence audio anytime without leaving navigation.
 * **Cold-Boot Auto-Launch**: Optional `BOOT_COMPLETED` / `QUICKBOOT_POWERON` receiver lets you automatically launch your preferred CarPlay/AA or navigation app right after ignition.
 
 ---

@@ -529,7 +529,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:buttonTint="@color/card_android_auto"
-            android:text="Persistent floating Mute pill over AA / CarPlay / YT (when Default Home)"
+            android:text="Persistent floating Mute pill over AA / CarPlay / Apps"
             android:textColor="@color/text_secondary"
             android:textSize="13sp" />
 

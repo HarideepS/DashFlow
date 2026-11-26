@@ -825,20 +825,38 @@ class MainActivity : AppCompatActivity() {
     private fun syncFloatingMuteOverlay(promptIfMissing: Boolean) {
         FloatingMuteService.sync(this)
         if (prefs.floatingMuteEnabled &&
-            FloatingMuteService.isDefaultHomeApp(this) &&
             !Settings.canDrawOverlays(this) &&
             promptIfMissing
         ) {
             prefs.floatingMutePrompted = true
-            AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
+            val builder = AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Dialog_Alert)
                 .setTitle("Enable Floating Mute Pill?")
                 .setMessage(
-                    "DashFlow is your default launcher! Allow 'Display over other apps' so a small draggable Mute button stays accessible even inside Android Auto, CarPlay, or YouTube."
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        "Allow 'Display over other apps' so a draggable Mute button stays accessible over Android Auto, CarPlay, and YouTube.\n\nOn Android 13+, if blocked as a restricted setting: open App Info → ⋮ → Allow restricted settings first."
+                    } else {
+                        "Allow 'Display over other apps' so a small draggable Mute button stays accessible over Android Auto, CarPlay, and YouTube."
+                    }
                 )
                 .setPositiveButton("Allow") { _, _ -> openOverlayPermissionSettings() }
                 .setNegativeButton("Not Now", null)
-                .show()
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                builder.setNeutralButton("App Info") { _, _ -> openAppInfoSettings() }
+            }
+            builder.show()
         }
+    }
+
+    private fun openAppInfoSettings() {
+        try {
+            val intent = Intent(
+                Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                Uri.parse("package:$packageName")
+            ).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            startActivity(intent)
+        } catch (_: Exception) {}
     }
 
     private fun openOverlayPermissionSettings() {

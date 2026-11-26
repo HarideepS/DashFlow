@@ -10,6 +10,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.drawable.GradientDrawable
@@ -53,9 +54,7 @@ class FloatingMuteService : Service() {
 
         fun sync(context: Context) {
             val prefs = PreferenceHelper(context)
-            val shouldRun = prefs.floatingMuteEnabled &&
-                Settings.canDrawOverlays(context) &&
-                isDefaultHomeApp(context)
+            val shouldRun = prefs.floatingMuteEnabled && Settings.canDrawOverlays(context)
 
             val serviceIntent = Intent(context, FloatingMuteService::class.java)
             if (shouldRun) {
@@ -115,6 +114,11 @@ class FloatingMuteService : Service() {
         return START_STICKY
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        clampPillToScreen()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         try {
@@ -169,15 +173,18 @@ class FloatingMuteService : Service() {
         val iconSizePx = (24 * density).roundToInt()
         val marginPx = (16 * density).roundToInt()
 
+        val maxX = (resources.displayMetrics.widthPixels - sizePx).coerceAtLeast(0)
+        val maxY = (resources.displayMetrics.heightPixels - sizePx).coerceAtLeast(0)
+
         val initialX = if (prefs.floatingPillX >= 0) {
-            prefs.floatingPillX
+            prefs.floatingPillX.coerceIn(0, maxX)
         } else {
-            (resources.displayMetrics.widthPixels - sizePx - marginPx).coerceAtLeast(0)
+            (maxX - marginPx).coerceAtLeast(0)
         }
         val initialY = if (prefs.floatingPillY >= 0) {
-            prefs.floatingPillY
+            prefs.floatingPillY.coerceIn(0, maxY)
         } else {
-            (resources.displayMetrics.heightPixels / 2 - sizePx / 2).coerceAtLeast(0)
+            (resources.displayMetrics.heightPixels / 2 - sizePx / 2).coerceIn(0, maxY)
         }
 
         val params = WindowManager.LayoutParams(
@@ -262,6 +269,18 @@ class FloatingMuteService : Service() {
         } catch (_: Exception) {
             stopSelf()
         }
+    }
+
+    private fun clampPillToScreen() {
+        val container = pillContainer ?: return
+        val params = layoutParams ?: return
+        val maxX = (resources.displayMetrics.widthPixels - params.width).coerceAtLeast(0)
+        val maxY = (resources.displayMetrics.heightPixels - params.height).coerceAtLeast(0)
+        params.x = params.x.coerceIn(0, maxX)
+        params.y = params.y.coerceIn(0, maxY)
+        try {
+            windowManager.updateViewLayout(container, params)
+        } catch (_: Exception) {}
     }
 
     private fun toggleMute() {
